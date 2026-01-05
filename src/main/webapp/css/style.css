@@ -1,0 +1,758 @@
+/* Estilos generales modernos y atractivos */
+:root {
+    --primary-color: #4f46e5;
+    /* Indigo 600 */
+    --primary-hover: #4338ca;
+    /* Indigo 700 */
+    --secondary-color: #8b5cf6;
+    /* Violet 500 */
+    --accent-color: #ec4899;
+    /* Pink 500 */
+    --background-color: #f3f4f6;
+    /* Gray 100 */
+    --surface-color: #ffffff;
+    --text-primary: #111827;
+    /* Gray 900 */
+    --text-secondary: #4b5563;
+    /* Gray 600 */
+    --border-color: #e5e7eb;
+    /* Gray 200 */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Liquid Glass Background */
+    background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Glassmorphism Utilities --- */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* --- Header --- */
+.main-header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.logo {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.025em;
+}
+
+.main-nav a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    transition: color 0.2s, transform 0.2s;
+    display: inline-block;
+}
+
+.main-nav a:hover {
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+/* --- Formularios (Genérico) --- */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #f9fafb;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    background-color: #fff;
+}
+
+button {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3);
+    opacity: 0.95;
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* --- Vista Pública (index.html) --- */
+#public-search-page {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.search-section {
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.search-section h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1rem;
+}
+
+.search-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    align-items: end;
+    margin-bottom: 2rem;
+}
+
+.search-form .form-group {
+    margin-bottom: 0;
+}
+
+.results-section h3 {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+/* --- Grid Layout for Results --- */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+/* --- Tarjeta de Habitación (Resultado) --- */
+.room-card {
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow-md);
+}
+
+.room-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(79, 70, 229, 0.1);
+}
+
+.room-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.room-card:hover .room-img {
+    transform: scale(1.05);
+}
+
+.room-info {
+    padding: 1.5rem;
+    position: relative;
+    background-color: transparent;
+    /* Allow glass effect to show through */
+}
+
+.room-info h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.room-info p {
+    margin: 0.35rem 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.room-coords {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-top: 0.75rem !important;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.room-availability {
+    margin-top: 1rem !important;
+    font-size: 0.875rem;
+    color: #10b981 !important;
+    /* Emerald 500 */
+    font-weight: 600;
+    background-color: #ecfdf5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    display: inline-block;
+}
+
+.room-actions {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    margin-top: auto;
+}
+
+/* Regla clave del PDF: Foto difuminada */
+.room-card.public img {
+    filter: blur(8px);
+    transition: filter 0.3s ease, transform 0.5s ease;
+}
+
+.room-card.public:hover img {
+    /* Opcional: reducir un poco el blur al hover para "tentar" */
+    filter: blur(6px);
+}
+
+/* --- Vista Logueado (app.html) --- */
+#logged-in-view {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    padding: 1rem 1.5rem;
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.profile-pic {
+    width: 40px;
+    /* Reduced size as requested */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+/* App Navigation (Horizontal) */
+.app-nav {
+    display: flex;
+    flex-direction: row;
+    /* Horizontal alignment */
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    overflow-x: auto;
+    /* Allow scrolling on small screens */
+}
+
+.nav-tab {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.nav-tab:hover {
+    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-tab.active {
+    color: white;
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-md);
+}
+
+
+
+.nav-tab a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Content Visibility Fix */
+
+
+.content {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Drag and Drop Styles --- */
+.drop-area {
+    border: 2px dashed #ccc;
+    border-radius: var(--radius-lg);
+    width: 100%;
+    margin: 1rem auto;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.drop-area.highlight {
+    border-color: var(--primary-color);
+    background-color: rgba(79, 70, 229, 0.1);
+    transform: scale(1.02);
+}
+
+.drop-area p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.btn-select {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.btn-select:hover {
+    background: var(--primary-hover);
+}
+
+#preview-container {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+#preview-container img {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    object-fit: contain;
+}
+
+/* --- Sub-navigation Tabs (App) --- */
+.sub-nav {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.subtab-btn,
+.subtab-btn-search {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.subtab-btn:hover,
+.subtab-btn-search:hover {
+    color: var(--primary-color);
+    background-color: rgba(79, 70, 229, 0.05);
+}
+
+.subtab-btn.active,
+.subtab-btn-search.active {
+    color: white;
+    background: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+/* --- Owner Request Card Styles --- */
+.user-info-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.profile-pic-small {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
+
+.room-details-box {
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-accept {
+    background: #10b981;
+    /* Emerald 500 */
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-accept:hover {
+    background: #059669;
+    /* Emerald 600 */
+}
+
+.btn-reject {
+    background: #ef4444;
+    /* Red 500 */
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-reject:hover {
+    background: #dc2626;
+    /* Red 600 */
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content box */
+/* Modal content box */
+.modal-content {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 2.5rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    max-width: 90%;
+    width: 420px;
+    text-align: center;
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.modal-content h3 {
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+    font-size: 1.5rem;
+}
+
+.modal-room-info {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.modal-room-info h4 {
+    margin: 0;
+    color: #334155;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.price-tag {
+    color: #4f46e5;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.modal-instruction {
+    color: #64748b;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+/* Ensure form group inside modal behaves correctly */
+.modal-content .form-group {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+/* Make the date input larger in the modal */
+#fecha-fin-solicitud {
+    padding: 1rem 1.25rem;
+    font-size: 1.1rem;
+    border-width: 2px;
+}
+
+#fecha-fin-solicitud::-webkit-calendar-picker-indicator {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* --- Map Search Styles --- */
+.map-slider-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.map-slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.map-slider-label {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.map-slider-value {
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.map-slider-input {
+    width: 100%;
+    accent-color: #666;
+    cursor: pointer;
+}
+
+.map-container {
+    height: 600px;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.date-inputs-container {
+    display: flex;
+    gap: 10px;
+}
+
+.date-input-half {
+    width: 50%;
+}
+
+.btn-full-width {
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+
+.search-tabs-container {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 10px;
+}
