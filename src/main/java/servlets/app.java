@@ -272,19 +272,36 @@ public class app extends HttpServlet {
                 java.util.List<models.Habitacion> misHabitaciones = utils.BD.getMisHabitaciones(usuario.getEmail());
                 request.setAttribute("misHabitaciones", misHabitaciones);
                 break;
-            case "solicitudes":
+            case "inquilino_solicitudes":
                 java.util.List<models.Solicitud> misSolicitudes = utils.BD.getMisSolicitudes(usuario.getEmail());
                 request.setAttribute("misSolicitudes", misSolicitudes);
                 break;
-            case "alquileres":
-                java.util.List<models.Alquiler> misAlquileres = utils.BD.getAlquileres(usuario.getEmail());
-                request.setAttribute("misAlquileres", misAlquileres);
+            case "inquilino_alquileres":
+                java.util.List<models.Alquiler> misAlquileresInquilino = utils.BD
+                        .getAlquileresComoInquilino(usuario.getEmail());
+                request.setAttribute("misAlquileres", misAlquileresInquilino);
                 break;
-            case "propietario":
+            case "propietario_solicitudes":
                 java.util.List<models.Solicitud> solicitudesEntrantes = utils.BD
                         .getSolicitudesEntrantes(usuario.getEmail());
-                request.setAttribute("solicitudesEntrantes", solicitudesEntrantes);
+                // Group requests by Habitacion
+                java.util.Map<models.Habitacion, java.util.List<models.Solicitud>> solicitudesPorHabitacion = new java.util.HashMap<>();
+                for (models.Solicitud s : solicitudesEntrantes) {
+                    models.Habitacion h = s.getHabitacion();
+                    if (h != null) {
+                        solicitudesPorHabitacion.computeIfAbsent(h, k -> new java.util.ArrayList<>()).add(s);
+                    }
+                }
+                request.setAttribute("solicitudesPorHabitacion", solicitudesPorHabitacion);
                 break;
+            case "propietario_alquileres":
+                java.util.List<models.Alquiler> misAlquileresPropietario = utils.BD
+                        .getAlquileresComoPropietario(usuario.getEmail());
+                request.setAttribute("misAlquileres", misAlquileresPropietario); // Reuse attribute name or use
+                                                                                 // separate? "misAlquileres" is fine if
+                                                                                 // JSP adapts
+                break;
+            // Legacy/Direct mappings if needed fallback, or just for "Consultar"
         }
 
         request.setAttribute("currentView", view);

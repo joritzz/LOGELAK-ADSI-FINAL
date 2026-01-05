@@ -215,10 +215,11 @@ public class BD {
 
     public static List<Solicitud> getSolicitudesEntrantes(String emailPropietario) {
         List<Solicitud> lista = new ArrayList<>();
-        String sql = "SELECT s.*, h.dirección, h.precioMes, u.nombre, u.imagenUsuario FROM solicitud s " +
+        String sql = "SELECT s.*, h.dirección, h.precioMes, h.ciudad, h.imagenHabitacion, u.nombre, u.imagenUsuario FROM solicitud s "
+                +
                 "JOIN habitacion h ON s.codHabi = h.codHabi " +
                 "JOIN usuario u ON s.emailInquilino = u.email " +
-                "WHERE h.emailPropietario = ?";
+                "WHERE h.emailPropietario = ? AND s.estado = 'pendiente'";
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, emailPropietario);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -227,10 +228,15 @@ public class BD {
                     s.setCodHabi(rs.getInt("codHabi"));
                     s.setEmailInquilino(rs.getString("emailInquilino"));
                     s.setEstado(rs.getString("estado"));
+                    s.setFechaPosibleInicioAlquiler(rs.getDate("fechaPosibleInicioAlquiler"));
+                    s.setFechaPosibleFinAlquiler(rs.getDate("fechaPosibleFinAlquiler"));
 
                     Habitacion h = new Habitacion();
+                    h.setCodHabi(rs.getInt("codHabi"));
                     h.setDireccion(rs.getString("dirección"));
                     h.setPrecioMes(rs.getInt("precioMes"));
+                    h.setCiudad(rs.getString("ciudad"));
+                    h.setImagenHabitacion(rs.getString("imagenHabitacion"));
                     s.setHabitacion(h);
 
                     Usuario u = new Usuario();
@@ -280,6 +286,68 @@ public class BD {
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Alquiler a = new Alquiler();
+                    a.setIdAlquiler(rs.getInt("idAlquiler"));
+                    a.setCodHabi(rs.getInt("codHabi"));
+                    a.setEmailInquilino(rs.getString("emailInquilino"));
+                    a.setFechaInicio(rs.getDate("fechaInicioAlqui"));
+                    a.setFechaFin(rs.getDate("fechaFinAlqui"));
+
+                    Habitacion h = new Habitacion();
+                    h.setDireccion(rs.getString("dirección"));
+                    h.setPrecioMes(rs.getInt("precioMes"));
+                    h.setImagenHabitacion(rs.getString("imagenHabitacion"));
+                    a.setHabitacion(h);
+
+                    lista.add(a);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public static List<Alquiler> getAlquileresComoInquilino(String email) {
+        List<Alquiler> lista = new ArrayList<>();
+        String sql = "SELECT a.*, h.dirección, h.precioMes, h.imagenHabitacion FROM alquiler a " +
+                "JOIN habitacion h ON a.codHabi = h.codHabi " +
+                "WHERE a.emailInquilino = ?";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Alquiler a = new Alquiler();
+                    a.setIdAlquiler(rs.getInt("idAlquiler"));
+                    a.setCodHabi(rs.getInt("codHabi"));
+                    a.setEmailInquilino(rs.getString("emailInquilino"));
+                    a.setFechaInicio(rs.getDate("fechaInicioAlqui"));
+                    a.setFechaFin(rs.getDate("fechaFinAlqui"));
+
+                    Habitacion h = new Habitacion();
+                    h.setDireccion(rs.getString("dirección"));
+                    h.setPrecioMes(rs.getInt("precioMes"));
+                    h.setImagenHabitacion(rs.getString("imagenHabitacion"));
+                    a.setHabitacion(h);
+
+                    lista.add(a);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public static List<Alquiler> getAlquileresComoPropietario(String email) {
+        List<Alquiler> lista = new ArrayList<>();
+        String sql = "SELECT a.*, h.dirección, h.precioMes, h.imagenHabitacion FROM alquiler a " +
+                "JOIN habitacion h ON a.codHabi = h.codHabi " +
+                "WHERE h.emailPropietario = ?";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Alquiler a = new Alquiler();

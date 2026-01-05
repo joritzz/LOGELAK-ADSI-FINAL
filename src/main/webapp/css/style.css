@@ -62,7 +62,7 @@ body {
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 2000;
 }
 
 .logo {
@@ -334,42 +334,113 @@ button:active {
     backdrop-filter: blur(8px);
     border-radius: var(--radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    overflow-x: auto;
-    /* Allow scrolling on small screens */
+    overflow-x: visible;
+    /* Changed from auto to visible to allow dropdowns */
+    flex-wrap: wrap;
+    /* Allow wrapping on small screens instead of scrolling */
+    position: relative;
+    z-index: 50;
 }
 
 .nav-tab {
-    padding: 0.75rem 1.5rem;
+    padding: 0;
     cursor: pointer;
     font-weight: 600;
     color: var(--text-secondary);
     border-radius: var(--radius-md);
     transition: all 0.2s;
     white-space: nowrap;
+    display: flex;
+    /* Ensure it behaves like a container */
+    align-items: center;
+    justify-content: center;
+    /* Center content horizontally */
 }
 
-.nav-tab:hover {
-    color: var(--primary-color);
-    background-color: rgba(255, 255, 255, 0.8);
-}
+/* ... existing hover/active styles ... */
 
-.nav-tab.active {
-    color: white;
-    background: var(--gradient-primary);
-    box-shadow: var(--shadow-md);
-}
-
-
-
-.nav-tab a {
+.nav-tab a,
+.nav-tab .dropdown-trigger {
     color: inherit;
     text-decoration: none;
-    display: block;
+    display: flex;
+    /* Use flex to center text vertically/horizontally inside */
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
+    padding: 0.75rem 1.5rem;
+    text-align: center;
 }
 
-/* Content Visibility Fix */
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+    /* display: inline-block; Removed to avoid conflict with .nav-tab flex */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 220px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0;
+    top: 100%;
+    left: 0;
+    border: 1px solid var(--border-color);
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropdown-content a {
+    color: var(--text-secondary);
+    padding: 0.75rem 1.5rem;
+    /* Increased padding to match nav tabs */
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    /* Ensure full width for centering */
+    transition: background 0.2s, color 0.2s;
+    font-weight: 500;
+    margin-left: 0;
+    /* Override main-nav margin if inherited */
+}
+
+
+.main-nav .dropdown-content a {
+    margin-left: 0;
+}
+
+.dropdown-content a:hover {
+    background-color: #f3f4f6;
+    color: var(--primary-color);
+}
+
+.dropdown-trigger {
+    cursor: pointer;
+    display: flex;
+    /* Align icon if needed */
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-trigger::after {
+    content: '▼';
+    font-size: 0.7em;
+    opacity: 0.7;
+}
+
+/* Removed complex bridge hacks as we are switching to click interaction */
 
 
 .content {

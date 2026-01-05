@@ -43,23 +43,69 @@
 
 
                                     <nav class="app-nav">
-                                        <div class="nav-tab tab-consultar <%= "consultar".equals(currentView)
+                                        <div class="nav-tab tab-consultar <%= " consultar".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=consultar">Consultar</a>
                                         </div>
-                                        <div class="nav-tab tab-habitaciones <%= "habitaciones".equals(currentView)
+                                        <div class="nav-tab tab-habitaciones <%= " habitaciones".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=habitaciones">Habitaciones</a>
                                         </div>
-                                        <div class="nav-tab tab-solicitudes <%= "solicitudes".equals(currentView)
-                                            ? "active" : "" %>">
-                                            <a href="app?view=solicitudes">Solicitudes</a>
+
+                                        <!-- Inquilino Dropdown -->
+                                        <div class="nav-tab dropdown <%= currentView.startsWith(" inquilino") ? "active"
+                                            : "" %>" onclick="toggleDropdown(event)">
+                                            <span class="dropdown-trigger">Inquilino</span>
+                                            <div class="dropdown-content">
+                                                <a href="app?view=inquilino_solicitudes">Mis Solicitudes</a>
+                                                <a href="app?view=inquilino_alquileres">Mis Alquileres</a>
+                                            </div>
                                         </div>
-                                        <div class="nav-tab tab-alquileres <%= "alquileres".equals(currentView)
-                                            ? "active" : "" %>">
-                                            <a href="app?view=alquileres">Alquileres</a>
+
+                                        <!-- Propietario Dropdown -->
+                                        <div class="nav-tab dropdown <%= currentView.startsWith(" propietario")
+                                            ? "active" : "" %>" onclick="toggleDropdown(event)">
+                                            <span class="dropdown-trigger">Propietario</span>
+                                            <div class="dropdown-content">
+                                                <a href="app?view=propietario_solicitudes">Solicitudes Recibidas</a>
+                                                <a href="app?view=propietario_alquileres">Alquileres en Propiedad</a>
+                                            </div>
                                         </div>
                                     </nav>
+
+                                    <script>
+                                        /* Dropdown Toggle Logic */
+                                        function toggleDropdown(event) {
+                                            event.stopPropagation(); // Prevent immediate closing
+
+                                            // Close all other dropdowns
+                                            var dropdowns = document.getElementsByClassName("dropdown-content");
+                                            for (var i = 0; i < dropdowns.length; i++) {
+                                                var openDropdown = dropdowns[i];
+                                                // If it's not the sibling of the clicked trigger, hide it
+                                                if (openDropdown !== event.currentTarget.nextElementSibling) {
+                                                    openDropdown.classList.remove('show');
+                                                }
+                                            }
+
+                                            // Toggle the clicked one
+                                            var content = event.currentTarget.nextElementSibling;
+                                            content.classList.toggle("show");
+                                        }
+
+                                        // Close the dropdown if the user clicks outside of it
+                                        window.onclick = function (event) {
+                                            if (!event.target.matches('.dropdown-trigger')) {
+                                                var dropdowns = document.getElementsByClassName("dropdown-content");
+                                                for (var i = 0; i < dropdowns.length; i++) {
+                                                    var openDropdown = dropdowns[i];
+                                                    if (openDropdown.classList.contains('show')) {
+                                                        openDropdown.classList.remove('show');
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    </script>
 
                                     <div class="tab-content">
 
@@ -252,8 +298,8 @@
                                             </div>
                                             <% } %>
 
-                                                <!-- VISTA SOLICITUDES -->
-                                                <% if ("solicitudes".equals(currentView)) { %>
+                                                <!-- VISTA SOLICITUDES INQUILINO -->
+                                                <% if ("inquilino_solicitudes".equals(currentView)) { %>
                                                     <div id="content-solicitudes" class="content active">
                                                         <h3>Mis Solicitudes Enviadas</h3>
                                                         <div class="results-grid">
@@ -297,8 +343,8 @@
                                                     </div>
                                                     <% } %>
 
-                                                        <!-- VISTA ALQUILERES -->
-                                                        <% if ("alquileres".equals(currentView)) { %>
+                                                        <!-- VISTA ALQUILERES INQUILINO -->
+                                                        <% if ("inquilino_alquileres".equals(currentView)) { %>
                                                             <div id="content-alquileres" class="content active">
                                                                 <h3>Mis Alquileres</h3>
                                                                 <div class="results-grid">
@@ -347,121 +393,276 @@
                                                             </div>
                                                             <% } %>
 
-                                                                <!-- VISTA PROPIETARIO -->
-                                                                <% if ("propietario".equals(currentView)) { %>
+                                                                <!-- VISTA PROPIETARIO SOLICITUDES -->
+                                                                <% if ("propietario_solicitudes".equals(currentView)) {
+                                                                    %>
                                                                     <div id="content-propietario"
                                                                         class="content active">
-                                                                        <h3>Solicitudes Recibidas</h3>
+                                                                        <h3>Solicitudes Recibidas (Por Habitación)</h3>
                                                                         <div class="results-grid">
-                                                                            <% List<Solicitud>
-                                                                                solicitudesEntrantes = (List
-                                                                                <Solicitud>)
-                                                                                    request.getAttribute("solicitudesEntrantes");
-                                                                                    if (solicitudesEntrantes !=
-                                                                                    null &&
-                                                                                    !solicitudesEntrantes.isEmpty())
+                                                                            <% java.util.Map<models.Habitacion,
+                                                                                List<Solicitud>>
+                                                                                solicitudesPorHabitacion =
+                                                                                (java.util.Map<models.Habitacion,
+                                                                                    List<Solicitud>>)
+                                                                                    request.getAttribute("solicitudesPorHabitacion");
+
+                                                                                    if (solicitudesPorHabitacion != null
+                                                                                    &&
+                                                                                    !solicitudesPorHabitacion.isEmpty())
                                                                                     {
-                                                                                    for (Solicitud s :
-                                                                                    solicitudesEntrantes) {
-                                                                                    Usuario inquilino =
-                                                                                    s.getInquilino();
-                                                                                    Habitacion h =
-                                                                                    s.getHabitacion();
-                                                                                    String fotoInquilino =
-                                                                                    (inquilino != null &&
-                                                                                    inquilino.getFoto() != null)
-                                                                                    ? inquilino.getFoto() :
-                                                                                    "https://placehold.co/50x50?text=U";
-                                                                                    %>
-                                                                                    <div class="room-card">
-                                                                                        <div class="user-info-header">
-                                                                                            <img src="<%= fotoInquilino %>"
-                                                                                                alt="Foto"
-                                                                                                class="profile-pic-small">
-                                                                                            <div>
-                                                                                                <h4>Solicitante:
-                                                                                                    <%= (inquilino
-                                                                                                        !=null) ?
-                                                                                                        inquilino.getNombre()
-                                                                                                        : "Desconocido"
-                                                                                                        %>
-                                                                                                </h4>
-                                                                                                <p><small>
-                                                                                                        <%= s.getEmailInquilino()
+                                                                                    for (java.util.Map.Entry
+                                                                                    <models.Habitacion, List<Solicitud>>
+                                                                                        entry :
+                                                                                        solicitudesPorHabitacion.entrySet())
+                                                                                        {
+                                                                                        Habitacion h = entry.getKey();
+                                                                                        List<Solicitud> reqs =
+                                                                                            entry.getValue();
+                                                                                            String img =
+                                                                                            (h.getImagenHabitacion() !=
+                                                                                            null) ?
+                                                                                            h.getImagenHabitacion() :
+                                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                                            %>
+                                                                                            <div class="room-card"
+                                                                                                style="display:block; width:100%;">
+                                                                                                <img src="<%= img %>"
+                                                                                                    alt="Foto"
+                                                                                                    class="room-img"
+                                                                                                    style="height: 200px;">
+                                                                                                <div class="room-info"
+                                                                                                    style="padding: 1.5rem;">
+                                                                                                    <h4>
+                                                                                                        <%= h.getDireccion()
                                                                                                             %>
-                                                                                                    </small></p>
+                                                                                                    </h4>
+                                                                                                    <p
+                                                                                                        style="color:var(--text-secondary); font-size:0.9em; margin-bottom:5px;">
+                                                                                                        ID: <%=
+                                                                                                            h.getCodHabi()
+                                                                                                            %>
+                                                                                                    </p>
+                                                                                                    <p><strong>
+                                                                                                            <%= h.getCiudad()
+                                                                                                                %>
+                                                                                                        </strong></p>
+                                                                                                    <p>
+                                                                                                        <%= h.getPrecioMes()
+                                                                                                            %> €/mes
+                                                                                                    </p>
+                                                                                                    <button
+                                                                                                        type="button"
+                                                                                                        class="btn-primary"
+                                                                                                        style="margin-top:10px; width:100%;"
+                                                                                                        onclick="toggleRequests('<%= h.getCodHabi() %>')">
+                                                                                                        Ver posibles
+                                                                                                        inquilinos (<%=
+                                                                                                            reqs.size()
+                                                                                                            %>)
+                                                                                                    </button>
+                                                                                                </div>
+
+                                                                                                <!-- Nested Requests List (Hidden by default) -->
+                                                                                                <div id="requests-<%= h.getCodHabi() %>"
+                                                                                                    style="display:none; padding-top:10px; border-top:1px solid var(--border-color);">
+                                                                                                    <% for (Solicitud s
+                                                                                                        : reqs) {
+                                                                                                        Usuario
+                                                                                                        inquilino=s.getInquilino();
+                                                                                                        String
+                                                                                                        fotoInquilino=(inquilino
+                                                                                                        !=null &&
+                                                                                                        inquilino.getFoto()
+                                                                                                        !=null) ?
+                                                                                                        inquilino.getFoto()
+                                                                                                        : "https://placehold.co/50x50?text=U"
+                                                                                                        ; %>
+                                                                                                        <div class="user-request-item"
+                                                                                                            style="display:flex; justify-content:space-between; align-items:center; background:#f9fafb; padding:10px; border-radius:8px; margin-bottom:8px;">
+                                                                                                            <div
+                                                                                                                style="display:flex; align-items:center; gap:10px;">
+                                                                                                                <img src="<%= fotoInquilino %>"
+                                                                                                                    alt="User"
+                                                                                                                    class="profile-pic-small">
+                                                                                                                <div>
+                                                                                                                    <h5
+                                                                                                                        style="margin:0;">
+                                                                                                                        <%= (inquilino
+                                                                                                                            !=null)
+                                                                                                                            ?
+                                                                                                                            inquilino.getNombre()
+                                                                                                                            : "Desconocido"
+                                                                                                                            %>
+                                                                                                                    </h5>
+                                                                                                                    <small>
+                                                                                                                        <%= s.getEmailInquilino()
+                                                                                                                            %>
+                                                                                                                    </small>
+                                                                                                                    <br>
+                                                                                                                    <span
+                                                                                                                        style="font-size:0.85em; color:var(--text-secondary);">
+                                                                                                                        <%= s.getFechaPosibleInicioAlquiler()
+                                                                                                                            %>
+                                                                                                                            -
+                                                                                                                            <%= s.getFechaPosibleFinAlquiler()
+                                                                                                                                %>
+                                                                                                                    </span>
+                                                                                                                    <br>
+                                                                                                                    <span
+                                                                                                                        class="status-<%= s.getEstado().toLowerCase() %>"
+                                                                                                                        style="font-size:0.8em;">
+                                                                                                                        <%= s.getEstado().substring(0,
+                                                                                                                            1).toUpperCase()
+                                                                                                                            +
+                                                                                                                            s.getEstado().substring(1).toLowerCase()
+                                                                                                                            %>
+                                                                                                                    </span>
+                                                                                                                </div>
+                                                                                                            </div>
+
+                                                                                                            <div
+                                                                                                                class="actions">
+                                                                                                                <% if
+                                                                                                                    ("pendiente".equalsIgnoreCase(s.getEstado()))
+                                                                                                                    { %>
+                                                                                                                    <form
+                                                                                                                        action="app"
+                                                                                                                        method="post"
+                                                                                                                        style="display:inline;">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="action"
+                                                                                                                            value="updateRequest">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="codHabi"
+                                                                                                                            value="<%= s.getCodHabi() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="emailInquilino"
+                                                                                                                            value="<%= s.getEmailInquilino() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="nuevoEstado"
+                                                                                                                            value="Aceptada">
+                                                                                                                        <button
+                                                                                                                            type="submit"
+                                                                                                                            class="btn-accept"
+                                                                                                                            title="Aceptar">✓</button>
+                                                                                                                    </form>
+                                                                                                                    <form
+                                                                                                                        action="app"
+                                                                                                                        method="post"
+                                                                                                                        style="display:inline;">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="action"
+                                                                                                                            value="updateRequest">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="codHabi"
+                                                                                                                            value="<%= s.getCodHabi() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="emailInquilino"
+                                                                                                                            value="<%= s.getEmailInquilino() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="nuevoEstado"
+                                                                                                                            value="Rechazada">
+                                                                                                                        <button
+                                                                                                                            type="submit"
+                                                                                                                            class="btn-reject"
+                                                                                                                            title="Rechazar">✕</button>
+                                                                                                                    </form>
+                                                                                                                    <% }
+                                                                                                                        %>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <% } %>
+                                                                                                </div>
                                                                                             </div>
-                                                                                        </div>
-                                                                                        <div class="room-details-box">
-                                                                                            <p><strong>Habitación:</strong>
-                                                                                                <%= (h !=null) ?
-                                                                                                    h.getDireccion()
-                                                                                                    : "" %>
-                                                                                            </p>
-                                                                                            <p><strong>Precio:</strong>
-                                                                                                <%= (h !=null) ?
-                                                                                                    h.getPrecioMes() : 0
-                                                                                                    %> €/mes
-                                                                                            </p>
-                                                                                            <p><strong>Estado:</strong>
-                                                                                                <span
-                                                                                                    class="status-<%= s.getEstado().toLowerCase() %>">
-                                                                                                    <%= s.getEstado() %>
-                                                                                                </span>
-                                                                                            </p>
-                                                                                        </div>
-                                                                                        <div class="actions">
-                                                                                            <% if
-                                                                                                ("Pendiente".equals(s.getEstado()))
-                                                                                                { %>
-                                                                                                <form action="app"
-                                                                                                    method="post"
-                                                                                                    style="display:inline;">
-                                                                                                    <input type="hidden"
-                                                                                                        name="action"
-                                                                                                        value="updateRequest">
-                                                                                                    <input type="hidden"
-                                                                                                        name="codHabi"
-                                                                                                        value="<%= s.getCodHabi() %>">
-                                                                                                    <input type="hidden"
-                                                                                                        name="emailInquilino"
-                                                                                                        value="<%= s.getEmailInquilino() %>">
-                                                                                                    <input type="hidden"
-                                                                                                        name="nuevoEstado"
-                                                                                                        value="Aceptada">
-                                                                                                    <button
-                                                                                                        type="submit"
-                                                                                                        class="btn-accept">Aceptar</button>
-                                                                                                </form>
-                                                                                                <form action="app"
-                                                                                                    method="post"
-                                                                                                    style="display:inline;">
-                                                                                                    <input type="hidden"
-                                                                                                        name="action"
-                                                                                                        value="updateRequest">
-                                                                                                    <input type="hidden"
-                                                                                                        name="codHabi"
-                                                                                                        value="<%= s.getCodHabi() %>">
-                                                                                                    <input type="hidden"
-                                                                                                        name="emailInquilino"
-                                                                                                        value="<%= s.getEmailInquilino() %>">
-                                                                                                    <input type="hidden"
-                                                                                                        name="nuevoEstado"
-                                                                                                        value="Rechazada">
-                                                                                                    <button
-                                                                                                        type="submit"
-                                                                                                        class="btn-reject">Rechazar</button>
-                                                                                                </form>
+                                                                                            <% } } else { %>
+                                                                                                <p>No tienes solicitudes
+                                                                                                    entrantes.</p>
                                                                                                 <% } %>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <% } } else { %>
-                                                                                        <p>No tienes solicitudes
-                                                                                            pendientes.</p>
-                                                                                        <% } %>
                                                                         </div>
                                                                     </div>
+                                                                    <script>
+                                                                        function toggleRequests(id) {
+                                                                            var el = document.getElementById('requests-' + id);
+                                                                            if (el.style.display === 'none') {
+                                                                                el.style.display = 'block';
+                                                                            } else {
+                                                                                el.style.display = 'none';
+                                                                            }
+                                                                        }
+                                                                    </script>
                                                                     <% } %>
+
+                                                                        <!-- VISTA PROPIETARIO ALQUILERES -->
+                                                                        <% if
+                                                                            ("propietario_alquileres".equals(currentView))
+                                                                            { %>
+                                                                            <div id="content-propietario-alquileres"
+                                                                                class="content active">
+                                                                                <h3>Mis Alquileres en Propiedad</h3>
+                                                                                <div class="results-grid">
+                                                                                    <% List<Alquiler> misAlquileres =
+                                                                                        (List<Alquiler>)
+                                                                                            request.getAttribute("misAlquileres");
+                                                                                            if (misAlquileres != null &&
+                                                                                            !misAlquileres.isEmpty()) {
+                                                                                            for (Alquiler a :
+                                                                                            misAlquileres) {
+                                                                                            Habitacion h =
+                                                                                            a.getHabitacion();
+                                                                                            String img = (h != null &&
+                                                                                            h.getImagenHabitacion() !=
+                                                                                            null) ?
+                                                                                            h.getImagenHabitacion() :
+                                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                                            %>
+                                                                                            <div class="room-card">
+                                                                                                <img src="<%= img %>"
+                                                                                                    alt="Foto"
+                                                                                                    class="room-img">
+                                                                                                <div class="room-info">
+                                                                                                    <h4>
+                                                                                                        <%= (h !=null) ?
+                                                                                                            h.getDireccion()
+                                                                                                            : "Desconocida"
+                                                                                                            %>
+                                                                                                    </h4>
+                                                                                                    <p><strong>Precio:</strong>
+                                                                                                        <%= (h !=null) ?
+                                                                                                            h.getPrecioMes()
+                                                                                                            : 0 %>
+                                                                                                            €/mes
+                                                                                                    </p>
+                                                                                                    <p><strong>Inquilino:</strong>
+                                                                                                        <%= a.getEmailInquilino()
+                                                                                                            %>
+                                                                                                    </p>
+                                                                                                    <p><strong>Inicio:</strong>
+                                                                                                        <%= a.getFechaInicio()
+                                                                                                            %>
+                                                                                                    </p>
+                                                                                                    <p><strong>Fin:</strong>
+                                                                                                        <%= a.getFechaFin()
+                                                                                                            %>
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <% } } else { %>
+                                                                                                <p>No tienes alquileres
+                                                                                                    activos en tus
+                                                                                                    propiedades.</p>
+                                                                                                <% } %>
+                                                                                </div>
+                                                                            </div>
+                                                                            <% } %>
 
                                 </div>
                                 </div>
@@ -478,12 +679,14 @@
                                         <form action="app" method="post">
                                             <input type="hidden" name="action" value="requestRoom">
                                             <input type="hidden" name="codHabi" id="modal-id-habitacion">
-                                            <p class="modal-instruction">¿Estás seguro de que quieres solicitar esta
+                                            <p class="modal-instruction">¿Estás seguro de que
+                                                quieres solicitar esta
                                                 habitación?</p>
                                             <div class="modal-actions">
                                                 <button type="button" id="btn-cancelar-solicitud" class="btn-secondary"
                                                     onclick="cerrarModalSolicitud()">Cancelar</button>
-                                                <button type="submit" class="btn-primary">Confirmar Solicitud</button>
+                                                <button type="submit" class="btn-primary">Confirmar
+                                                    Solicitud</button>
                                             </div>
                                         </form>
                                     </div>
@@ -709,6 +912,28 @@
 
                                     // Placeholder for plotResults needed to avoid break if called
                                     function plotResults() { }
+
+                                    function toggleDropdown(event) {
+                                        event.stopPropagation();
+
+                                        // Find the dropdown content relative to the clicked element (which is the .nav-tab container)
+                                        var target = event.currentTarget;
+                                        var content = target.querySelector('.dropdown-content');
+
+                                        // Close all other dropdowns
+                                        var dropdowns = document.getElementsByClassName("dropdown-content");
+                                        for (var i = 0; i < dropdowns.length; i++) {
+                                            var openDropdown = dropdowns[i];
+                                            if (openDropdown !== content) {
+                                                openDropdown.classList.remove('show');
+                                            }
+                                        }
+
+                                        // Toggle the current one
+                                        if (content) {
+                                            content.classList.toggle("show");
+                                        }
+                                    }
 
                                     function cerrarModalSolicitud() {
                                         document.getElementById('modal-solicitud').style.display = 'none';
