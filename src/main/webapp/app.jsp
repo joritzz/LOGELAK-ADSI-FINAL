@@ -282,6 +282,9 @@
                                                                         <h4>
                                                                             <%= h.getDireccion() %>
                                                                         </h4>
+                                                                        <p><strong>ID:</strong>
+                                                                            <%= h.getCodHabi() %>
+                                                                        </p>
                                                                         <p><strong>Ciudad:</strong>
                                                                             <%= h.getCiudad() %>
                                                                         </p>

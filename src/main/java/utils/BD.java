@@ -321,7 +321,8 @@ public class BD {
         List<Alquiler> lista = new ArrayList<>();
         String sql = "SELECT a.*, h.dirección, h.precioMes, h.imagenHabitacion FROM alquiler a " +
                 "JOIN habitacion h ON a.codHabi = h.codHabi " +
-                "WHERE a.emailInquilino = ?";
+                "WHERE a.emailInquilino = ? " +
+                "ORDER BY a.codHabi, a.fechaInicioAlqui DESC";
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
