@@ -40,6 +40,25 @@ public class Solicitud {
         this.estado = estado;
     }
 
+    private java.util.Date fechaPosibleInicioAlquiler;
+    private java.util.Date fechaPosibleFinAlquiler;
+
+    public java.util.Date getFechaPosibleInicioAlquiler() {
+        return fechaPosibleInicioAlquiler;
+    }
+
+    public void setFechaPosibleInicioAlquiler(java.util.Date fechaPosibleInicioAlquiler) {
+        this.fechaPosibleInicioAlquiler = fechaPosibleInicioAlquiler;
+    }
+
+    public java.util.Date getFechaPosibleFinAlquiler() {
+        return fechaPosibleFinAlquiler;
+    }
+
+    public void setFechaPosibleFinAlquiler(java.util.Date fechaPosibleFinAlquiler) {
+        this.fechaPosibleFinAlquiler = fechaPosibleFinAlquiler;
+    }
+
     private Habitacion habitacion;
     private Usuario inquilino;
 
