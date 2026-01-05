@@ -51,10 +51,14 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="search-date-public">Fecha (a partir de):</label>
-                                    <input type="date" id="search-date-public" name="fecha" placeholder="AAAA/MM/DD"
-                                        min="<%= java.time.LocalDate.now() %>" value="<%= request.getParameter(" fecha")
-                                        !=null ? request.getParameter("fecha") : "" %>">
+                                    <label for="search-date-start">Fecha Inicio:</label>
+                                    <input type="date" id="search-date-start" name="fechaInicio" placeholder="AAAA/MM/DD"
+                                        min="<%= java.time.LocalDate.now() %>" value="<%= request.getParameter("fechaInicio") !=null ? request.getParameter("fechaInicio") : "" %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="search-date-end">Fecha Fin:</label>
+                                    <input type="date" id="search-date-end" name="fechaFin" placeholder="AAAA/MM/DD"
+                                        min="<%= java.time.LocalDate.now() %>" value="<%= request.getParameter("fechaFin") !=null ? request.getParameter("fechaFin") : "" %>">
                                 </div>
                                 <button type="submit">Buscar</button>
                             </form>

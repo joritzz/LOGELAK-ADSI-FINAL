@@ -39,16 +39,20 @@ public class BD {
     }
 
     // ----------------------------------------------------------------------------------------------------------------------------------
-    public static List<Habitacion> getHabitacionesDisponibles(String ciudad, Date fechaInicio, Date fechaFin) {
+    public static List<Habitacion> getHabitacionesDisponibles(String ciudad, Date fechaInicio, Date fechaFin,
+            String excludeEmail) {
         List<Habitacion> lista = new ArrayList<>();
-        String sql = "SELECT * FROM habitacion h WHERE h.ciudad = ? AND NOT EXISTS (" +
+        String sql = "SELECT * FROM habitacion h WHERE h.ciudad = ? AND (? IS NULL OR h.emailPropietario != ?) AND NOT EXISTS ("
+                +
                 "SELECT * FROM alquiler a WHERE a.codHabi = h.codHabi AND " +
                 "(a.fechaInicioAlqui <= ? AND a.fechaFinAlqui >= ?))";
 
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, ciudad);
-            pstmt.setDate(2, new java.sql.Date(fechaFin.getTime()));
-            pstmt.setDate(3, new java.sql.Date(fechaInicio.getTime()));
+            pstmt.setString(2, excludeEmail);
+            pstmt.setString(3, excludeEmail);
+            pstmt.setDate(4, new java.sql.Date(fechaFin.getTime()));
+            pstmt.setDate(5, new java.sql.Date(fechaInicio.getTime()));
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -71,7 +75,7 @@ public class BD {
     }
 
     public static List<Habitacion> getHabitacionesCercanas(double myLat, double myLng, double radioKm, Date fechaInicio,
-            Date fechaFin) {
+            Date fechaFin, String excludeEmail) {
         List<Habitacion> lista = new ArrayList<>();
         // Haversine formula in SQL
         String sql;
@@ -82,7 +86,7 @@ public class BD {
                     " (6371 * acos(cos(radians(?)) * cos(radians(latitudH)) * cos(radians(longitudH) - radians(?)) + sin(radians(?)) * sin(radians(latitudH)))) AS distancia"
                     +
                     " FROM habitacion h" +
-                    " WHERE NOT EXISTS (" +
+                    " WHERE (? IS NULL OR h.emailPropietario != ?) AND NOT EXISTS (" +
                     "   SELECT * FROM alquiler a WHERE a.codHabi = h.codHabi AND" +
                     "   (a.fechaInicioAlqui <= ? AND a.fechaFinAlqui >= ?)" +
                     " )" +
@@ -93,6 +97,7 @@ public class BD {
                     " (6371 * acos(cos(radians(?)) * cos(radians(latitudH)) * cos(radians(longitudH) - radians(?)) + sin(radians(?)) * sin(radians(latitudH)))) AS distancia"
                     +
                     " FROM habitacion h" +
+                    " WHERE (? IS NULL OR h.emailPropietario != ?)" +
                     " HAVING distancia < ?" +
                     " ORDER BY distancia";
         }
@@ -101,14 +106,16 @@ public class BD {
             pstmt.setDouble(1, myLat);
             pstmt.setDouble(2, myLng);
             pstmt.setDouble(3, myLat);
+            pstmt.setString(4, excludeEmail);
+            pstmt.setString(5, excludeEmail);
 
             if (checkDates) {
-                pstmt.setDate(4, new java.sql.Date(fechaFin.getTime()));
-                pstmt.setDate(5, new java.sql.Date(fechaInicio.getTime()));
-                pstmt.setDouble(6, radioKm);
+                pstmt.setDate(6, new java.sql.Date(fechaFin.getTime()));
+                pstmt.setDate(7, new java.sql.Date(fechaInicio.getTime()));
+                pstmt.setDouble(8, radioKm);
                 System.out.println("Executing SQL (Dates): Lat=" + myLat + ", Lng=" + myLng + ", Radius=" + radioKm);
             } else {
-                pstmt.setDouble(4, radioKm);
+                pstmt.setDouble(6, radioKm);
                 System.out.println("Executing SQL (No Dates): Lat=" + myLat + ", Lng=" + myLng + ", Radius=" + radioKm);
             }
 
@@ -411,6 +418,21 @@ public class BD {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static java.sql.Date getProximaFechaDisponible(int codHabi) {
+        String sql = "SELECT GREATEST(CURDATE(), COALESCE(MAX(DATE_ADD(fechaFinAlqui, INTERVAL 1 DAY)), CURDATE())) FROM alquiler WHERE codHabi = ?";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setInt(1, codHabi);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDate(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new java.sql.Date(System.currentTimeMillis());
     }
 
 }

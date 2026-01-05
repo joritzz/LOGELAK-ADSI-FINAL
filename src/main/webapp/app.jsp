@@ -867,6 +867,7 @@
                                                 '<h4>' + h.direccion + '</h4>' +
                                                 '<p><strong>Ciudad:</strong> ' + h.ciudad + '</p>' +
                                                 '<p><strong>Precio:</strong> ' + h.precio + ' €/mes</p>' +
+                                                '<p><strong>Disponible:</strong> ' + h.fechaDisponible + '</p>' +
                                                 '</div>' +
                                                 '<div class="room-actions">' +
                                                 '<button class="btn-solicitar" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')">Solicitar 📩</button>' +
@@ -893,10 +894,12 @@
                                                 // InfoWindow
                                                 const infoWindow = new google.maps.InfoWindow();
                                                 const contentString =
-                                                    '<div style="text-align:center; width: 150px;">' +
+                                                    '<div style="text-align:center; width: 180px;">' +
                                                     '<img src="' + h.imagen + '" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">' +
                                                     '<h5 style="margin:0 0 5px 0; font-size:14px;">' + h.direccion + '</h5>' +
-                                                    '<p style="margin:0; font-weight:bold; color:#4f46e5;">' + h.precio + ' €/mes</p>' +
+                                                    '<p style="margin:0; font-size:12px; color:#555;">' + h.fechaDisponible + '</p>' +
+                                                    '<p style="margin:0; font-size:10px; color:#777;">' + h.emailPropietario + '</p>' +
+                                                    '<p style="margin:5px 0 0 0; font-weight:bold; color:#4f46e5;">' + h.precio + ' €/mes</p>' +
                                                     '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')" ' +
                                                     'style="margin-top:8px; padding:4px 10px; background:#4f46e5; color:white; border:none; border-radius:4px; cursor:pointer;">Solicitar</button>' +
                                                     '</div>';

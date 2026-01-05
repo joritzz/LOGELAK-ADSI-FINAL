@@ -39,16 +39,17 @@ public class index extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String ciudad = request.getParameter("ciudad");
-        String fechaStr = request.getParameter("fecha");
+        String fechaInicioStr = request.getParameter("fechaInicio");
+        String fechaFinStr = request.getParameter("fechaFin");
 
-        if (ciudad != null && fechaStr != null && !fechaStr.isEmpty()) {
+        if (ciudad != null && fechaInicioStr != null && !fechaInicioStr.isEmpty() && fechaFinStr != null
+                && !fechaFinStr.isEmpty()) {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date fechaInicio = sdf.parse(fechaStr);
-                // Asumimos un día de estancia para comprobar disponibilidad en esa fecha
-                Date fechaFin = fechaInicio;
+                Date fechaInicio = sdf.parse(fechaInicioStr);
+                Date fechaFin = sdf.parse(fechaFinStr);
 
-                List<Habitacion> habitaciones = BD.getHabitacionesDisponibles(ciudad, fechaInicio, fechaFin);
+                List<Habitacion> habitaciones = BD.getHabitacionesDisponibles(ciudad, fechaInicio, fechaFin, null);
 
                 request.setAttribute("searchResults", habitaciones);
 

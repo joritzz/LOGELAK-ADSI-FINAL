@@ -102,7 +102,7 @@ public class app extends HttpServlet {
                                 }
 
                                 habitaciones = utils.BD.getHabitacionesCercanas(myLat, myLng, radius, fechaInicio,
-                                        fechaFin);
+                                        fechaFin, usuario.getEmail());
                                 request.setAttribute("searchResultType", "geo");
                                 request.setAttribute("searchLat", myLat);
                                 request.setAttribute("searchLng", myLng);
@@ -110,7 +110,8 @@ public class app extends HttpServlet {
                             } else {
                                 // Standard City Search (Dates Required)
                                 if (fechaInicio != null && fechaFin != null) {
-                                    habitaciones = utils.BD.getHabitacionesDisponibles(ciudad, fechaInicio, fechaFin);
+                                    habitaciones = utils.BD.getHabitacionesDisponibles(ciudad, fechaInicio, fechaFin,
+                                            usuario.getEmail());
                                 } else {
                                     habitaciones = new java.util.ArrayList<>(); // Should not happen given outer if, but
                                                                                 // safety
@@ -145,7 +146,9 @@ public class app extends HttpServlet {
                                     out.print("\"ciudad\": \"" + ciudadH + "\",");
                                     out.print("\"emailPropietario\": \"" + email + "\",");
                                     out.print("\"precio\": " + h.getPrecioMes() + ",");
-                                    out.print("\"imagen\": \"" + img + "\"");
+                                    out.print("\"imagen\": \"" + img + "\",");
+                                    out.print("\"fechaDisponible\": \""
+                                            + utils.BD.getProximaFechaDisponible(h.getCodHabi()) + "\"");
                                     out.print("}");
                                     if (i < habitaciones.size() - 1)
                                         out.print(",");
