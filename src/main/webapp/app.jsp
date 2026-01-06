@@ -13,13 +13,17 @@
                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                             <title>Logelak - Mi Perfil</title>
                             <link rel="stylesheet" href="css/style.css?v=<%= java.time.Instant.now().toEpochMilli() %>">
-                            <link rel="icon" href="imgs/favicon.png" type="image/png">
+                            <link rel="icon" href="image/favicon.png" type="image/png">
                         </head>
 
                         <body>
 
                             <header class="main-header">
-                                <div class="logo">Logelak</div>
+                                <div class="logo">
+                                    <img src="image/favicon.png" alt="Logo"
+                                        style="height: 1.2em; vertical-align: middle; margin-right: 10px;">
+                                    Logelak
+                                </div>
                                 <nav class="main-nav">
                                     <a href="app?action=logout" id="logout-link">Logout</a>
                                 </nav>
@@ -900,7 +904,7 @@
                                                     '<div style="text-align:center; width: 180px;">' +
                                                     '<img src="' + h.imagen + '" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">' +
                                                     '<h5 style="margin:0 0 5px 0; font-size:14px;">' + h.direccion + '</h5>' +
-                                                    '<p style="margin:0; font-size:12px; color:#555;">' + h.fechaDisponible + '</p>' +
+                                                    '<p style="margin:0; font-size:12px; color:#555;">Disponible desde: ' + h.fechaDisponible + '</p>' +
                                                     '<p style="margin:0; font-size:10px; color:#777;">' + h.emailPropietario + '</p>' +
                                                     '<p style="margin:5px 0 0 0; font-weight:bold; color:#4f46e5;">' + h.precio + ' €/mes</p>' +
                                                     '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')" ' +

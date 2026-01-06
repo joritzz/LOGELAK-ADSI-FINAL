@@ -17,7 +17,7 @@
             <!-- Enlace a los estilos específicos del login -->
             <link rel="stylesheet" href="css/login.css">
 
-            <link rel="icon" href="imgs/favicon.png" type="image/png">
+            <link rel="icon" href="image/favicon.png" type="image/png">
 
         </head>
 

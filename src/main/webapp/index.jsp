@@ -15,13 +15,17 @@
         para mantener la coherencia.
     -->
                     <link rel="stylesheet" href="css/style.css">
-                    <link rel="icon" href="imgs/favicon.png" type="image/png">
+                    <link rel="icon" href="image/favicon.png" type="image/png">
                 </head>
 
                 <body>
 
                     <header class="main-header">
-                        <div class="logo">Logelak</div>
+                        <div class="logo">
+                            <img src="image/favicon.png" alt="Logo"
+                                style="height: 1.2em; vertical-align: middle; margin-right: 10px;">
+                            Logelak
+                        </div>
                         <nav class="main-nav">
                             <!-- 
                 Enlace a la página de login separada.
@@ -52,8 +56,10 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="search-date-start">Fecha Inicio:</label>
-                                    <input type="date" id="search-date-start" name="fechaInicio" placeholder="AAAA/MM/DD"
-                                        min="<%= java.time.LocalDate.now() %>" value="<%= request.getParameter("fechaInicio") !=null ? request.getParameter("fechaInicio") : "" %>">
+                                    <input type="date" id="search-date-start" name="fechaInicio"
+                                        placeholder="AAAA/MM/DD" min="<%= java.time.LocalDate.now() %>"
+                                        value="<%= request.getParameter(" fechaInicio") !=null ?
+                                        request.getParameter("fechaInicio") : "" %>">
                                 </div>
                                 <div class="form-group">
                                     <label for="search-date-end">Fecha Fin:</label>
@@ -78,7 +84,8 @@
                                         %>
                                         <div class="room-card public" data-room-id="<%= h.getCodHabi() %>"
                                             onclick="window.location.href='login.jsp'" style="cursor: pointer;">
-                                            <img src="<%= (h.getImagenHabitacion() != null && !h.getImagenHabitacion().isEmpty()) ? h.getImagenHabitacion() : "https://placehold.co/200x150/cccccc/999999?text=Foto" %>" alt="Foto de habitación" class="room-img">
+                                            <img src="<%= (h.getImagenHabitacion() != null && !h.getImagenHabitacion().isEmpty()) ? h.getImagenHabitacion() : "https://placehold.co/200x150/cccccc/999999?text=Foto" %>" alt="Foto de
+                                            habitación" class="room-img">
                                             <div class="room-info">
                                                 <p><strong>Dirección:</strong>
                                                     <%= h.getDireccion() %>
