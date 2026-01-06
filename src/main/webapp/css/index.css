@@ -2,7 +2,8 @@
     box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -10,8 +11,10 @@ body, html {
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6; /* Equivalente a bg-gray-100 */
-    color: #1f2937; /* Equivalente a text-gray-800 */
+    background-color: #f3f4f6;
+    /* Gray 100 */
+    color: #1f2937;
+    /* Gray 800 */
 }
 
 /* Cabecera superior para el Login */
@@ -21,22 +24,31 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: flex-end;
+    /* Align login link to the right if logo is not here */
     align-items: center;
 }
 
+/* If logo is present in header, justify-between is better, but index.css seems to be specific */
+/* Recalibrating based on style.css unifying header */
+
 .login-link {
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 500; /* font-medium */
-    color: #2563eb; /* text-blue-600 */
+    font-size: 0.875rem;
+    /* text-sm */
+    font-weight: 500;
+    /* font-medium */
+    color: #dc2626;
+    /* Red 600 */
     text-decoration: none;
     padding: 0.5rem 0.75rem;
-    border-radius: 6px; /* rounded-md */
+    border-radius: 6px;
+    /* rounded-md */
     transition: all 0.2s ease-in-out;
 }
 
 .login-link:hover {
     text-decoration: underline;
-    color: #1d4ed8; /* hover:text-blue-800 */
+    color: #b91c1c;
+    /* Red 700 */
 }
 
 /* Contenedor principal para centrar el cuadro */
@@ -44,51 +56,53 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 3rem 1rem; /* Espacio para que no pegue con la cabecera */
+    padding: 3rem 1rem;
 }
 
 /* El cuadro blanco central */
 .search-container {
     background-color: #ffffff;
-    padding: 2rem; /* p-8 */
-    border-radius: 8px; /* rounded-lg */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* shadow-lg */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 448px; /* max-w-md */
+    max-width: 448px;
+    border: 1px solid #e5e7eb;
 }
 
 .search-container h1 {
-    font-size: 1.5rem; /* text-2xl */
-    font-weight: 700; /* font-bold */
+    font-size: 1.5rem;
+    font-weight: 700;
     text-align: center;
-    color: #1f2937; /* text-gray-800 */
+    color: #1f2937;
     margin-top: 0;
-    margin-bottom: 1.5rem; /* mb-6 */
+    margin-bottom: 1.5rem;
 }
 
 /* Estilos del formulario */
 form div {
-    margin-bottom: 1.5rem; /* Simula space-y-6 */
+    margin-bottom: 1.5rem;
 }
 
 label {
     display: block;
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 500; /* font-medium */
-    color: #4b5563; /* text-gray-700 */
-    margin-bottom: 0.5rem; /* mb-2 */
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
 }
 
 /* Estilo para inputs y select */
 select,
 input[type="date"] {
     width: 100%;
-    padding: 0.75rem 1rem; /* px-4 py-3 */
-    border: 1px solid #d1d5db; /* border-gray-300 */
-    border-radius: 8px; /* rounded-lg */
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     font-size: 1rem;
-    height: 2.8125rem; /* 45px - Añadido para igualar alturas */
+    height: 2.8125rem;
+    background-color: #ffffff;
 }
 
 /* Foco para inputs y select */
@@ -96,24 +110,27 @@ select:focus,
 input[type="date"]:focus {
     outline: 2px solid transparent;
     outline-offset: 2px;
-    border-color: #2563eb; /* focus:border-blue-500 */
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* focus:ring-2 focus:ring-blue-500 */
+    border-color: #dc2626;
+    /* Red 600 */
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 /* Botón de búsqueda */
 button {
     width: 100%;
-    background-color: #2563eb; /* bg-blue-600 */
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     color: white;
-    font-weight: 700; /* font-bold */
-    padding: 0.75rem 1rem; /* py-3 px-4 */
+    font-weight: 700;
+    padding: 0.75rem 1rem;
     border: none;
-    border-radius: 8px; /* rounded-lg */
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-md */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 button:hover {
-    background-color: #1d4ed8; /* hover:bg-blue-700 */
+    transform: translateY(-2px);
+    opacity: 0.95;
+    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
 }

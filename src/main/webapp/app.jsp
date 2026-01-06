@@ -20,8 +20,7 @@
 
                             <header class="main-header">
                                 <div class="logo">
-                                    <img src="image/favicon.png" alt="Logo"
-                                        style="height: 1.2em; vertical-align: middle; margin-right: 10px;">
+                                    <img src="image/favicon.png" alt="Logo" class="logo-img">
                                     Logelak
                                 </div>
                                 <nav class="main-nav">
@@ -155,7 +154,7 @@
                                                 </div>
 
                                                 <!-- MAP SEARCH FORM -->
-                                                <div id="search-map" class="search-tab-content" style="display:none;">
+                                                <div id="search-map" class="search-tab-content d-none">
                                                     <form action="app" method="post" id="map-search-form">
                                                         <input type="hidden" name="action" value="search">
                                                         <input type="hidden" id="map-lat" name="lat">
@@ -432,20 +431,19 @@
                                                                                             h.getImagenHabitacion() :
                                                                                             "https://placehold.co/200x150?text=Sin+Foto";
                                                                                             %>
-                                                                                            <div class="room-card"
-                                                                                                style="display:block; width:100%;">
+                                                                                            <div
+                                                                                                class="room-card owner-card">
                                                                                                 <img src="<%= img %>"
                                                                                                     alt="Foto"
-                                                                                                    class="room-img"
-                                                                                                    style="height: 200px;">
-                                                                                                <div class="room-info"
-                                                                                                    style="padding: 1.5rem;">
+                                                                                                    class="room-img owner-img">
+                                                                                                <div
+                                                                                                    class="room-info owner-info">
                                                                                                     <h4>
                                                                                                         <%= h.getDireccion()
                                                                                                             %>
                                                                                                     </h4>
                                                                                                     <p
-                                                                                                        style="color:var(--text-secondary); font-size:0.9em; margin-bottom:5px;">
+                                                                                                        class="room-id-text">
                                                                                                         ID: <%=
                                                                                                             h.getCodHabi()
                                                                                                             %>
@@ -460,8 +458,7 @@
                                                                                                     </p>
                                                                                                     <button
                                                                                                         type="button"
-                                                                                                        class="btn-primary"
-                                                                                                        style="margin-top:10px; width:100%;"
+                                                                                                        class="btn-primary btn-full-width"
                                                                                                         onclick="toggleRequests('<%= h.getCodHabi() %>')">
                                                                                                         Ver posibles
                                                                                                         inquilinos (<%=
@@ -472,7 +469,7 @@
 
                                                                                                 <!-- Nested Requests List (Hidden by default) -->
                                                                                                 <div id="requests-<%= h.getCodHabi() %>"
-                                                                                                    style="display:none; padding-top:10px; border-top:1px solid var(--border-color);">
+                                                                                                    class="requests-container">
                                                                                                     <% for (Solicitud s
                                                                                                         : reqs) {
                                                                                                         Usuario
@@ -485,16 +482,16 @@
                                                                                                         inquilino.getFoto()
                                                                                                         : "https://placehold.co/50x50?text=U"
                                                                                                         ; %>
-                                                                                                        <div class="user-request-item"
-                                                                                                            style="display:flex; justify-content:space-between; align-items:center; background:#f9fafb; padding:10px; border-radius:8px; margin-bottom:8px;">
+                                                                                                        <div
+                                                                                                            class="user-request-item">
                                                                                                             <div
-                                                                                                                style="display:flex; align-items:center; gap:10px;">
+                                                                                                                class="request-user-info">
                                                                                                                 <img src="<%= fotoInquilino %>"
                                                                                                                     alt="User"
                                                                                                                     class="profile-pic-small">
                                                                                                                 <div>
                                                                                                                     <h5
-                                                                                                                        style="margin:0;">
+                                                                                                                        class="request-user-name">
                                                                                                                         <%= (inquilino
                                                                                                                             !=null)
                                                                                                                             ?
@@ -508,7 +505,7 @@
                                                                                                                     </small>
                                                                                                                     <br>
                                                                                                                     <span
-                                                                                                                        style="font-size:0.85em; color:var(--text-secondary);">
+                                                                                                                        class="request-date">
                                                                                                                         <%= s.getFechaPosibleInicioAlquiler()
                                                                                                                             %>
                                                                                                                             -
@@ -517,8 +514,7 @@
                                                                                                                     </span>
                                                                                                                     <br>
                                                                                                                     <span
-                                                                                                                        class="status-<%= s.getEstado().toLowerCase() %>"
-                                                                                                                        style="font-size:0.8em;">
+                                                                                                                        class="status-<%= s.getEstado().toLowerCase() %> request-status-text">
                                                                                                                         <%= s.getEstado().substring(0,
                                                                                                                             1).toUpperCase()
                                                                                                                             +
@@ -536,7 +532,7 @@
                                                                                                                     <form
                                                                                                                         action="app"
                                                                                                                         method="post"
-                                                                                                                        style="display:inline;">
+                                                                                                                        class="inline-form">
                                                                                                                         <input
                                                                                                                             type="hidden"
                                                                                                                             name="action"
@@ -561,7 +557,7 @@
                                                                                                                     <form
                                                                                                                         action="app"
                                                                                                                         method="post"
-                                                                                                                        style="display:inline;">
+                                                                                                                        class="inline-form">
                                                                                                                         <input
                                                                                                                             type="hidden"
                                                                                                                             name="action"
@@ -675,7 +671,7 @@
                                 </div>
 
                                 <!-- Modal para seleccionar fecha de solicitud -->
-                                <div id="modal-solicitud" class="modal hidden" style="display: none;">
+                                <div id="modal-solicitud" class="modal hidden">
                                     <div class="modal-content">
                                         <div class="modal-header-icon">📅</div>
                                         <h3>Solicitar Alquiler</h3>
@@ -901,14 +897,14 @@
                                                 // InfoWindow
                                                 const infoWindow = new google.maps.InfoWindow();
                                                 const contentString =
-                                                    '<div style="text-align:center; width: 180px;">' +
-                                                    '<img src="' + h.imagen + '" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">' +
-                                                    '<h5 style="margin:0 0 5px 0; font-size:14px;">' + h.direccion + '</h5>' +
-                                                    '<p style="margin:0; font-size:12px; color:#555;">Disponible desde: ' + h.fechaDisponible + '</p>' +
-                                                    '<p style="margin:0; font-size:10px; color:#777;">' + h.emailPropietario + '</p>' +
-                                                    '<p style="margin:5px 0 0 0; font-weight:bold; color:#4f46e5;">' + h.precio + ' €/mes</p>' +
+                                                    '<div class="info-window-content">' +
+                                                    '<img src="' + h.imagen + '" class="info-window-img">' +
+                                                    '<h5 class="info-window-title">' + h.direccion + '</h5>' +
+                                                    '<p class="info-window-text">Disponible desde: ' + h.fechaDisponible + '</p>' +
+                                                    '<p class="info-window-subtext">' + h.emailPropietario + '</p>' +
+                                                    '<p class="info-window-price">' + h.precio + ' €/mes</p>' +
                                                     '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')" ' +
-                                                    'style="margin-top:8px; padding:4px 10px; background:#4f46e5; color:white; border:none; border-radius:4px; cursor:pointer;">Solicitar</button>' +
+                                                    'class="info-window-btn">Solicitar</button>' +
                                                     '</div>';
 
                                                 marker.addListener("click", () => {

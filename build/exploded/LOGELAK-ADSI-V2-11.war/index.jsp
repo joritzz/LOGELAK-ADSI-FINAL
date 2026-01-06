@@ -22,8 +22,7 @@
 
                     <header class="main-header">
                         <div class="logo">
-                            <img src="image/favicon.png" alt="Logo"
-                                style="height: 1.2em; vertical-align: middle; margin-right: 10px;">
+                            <img src="image/favicon.png" alt="Logo" class="logo-img">
                             Logelak
                         </div>
                         <nav class="main-nav">
@@ -82,10 +81,10 @@
                                         if (searchResults != null && !searchResults.isEmpty()) {
                                         for (Habitacion h : searchResults) {
                                         %>
-                                        <div class="room-card public" data-room-id="<%= h.getCodHabi() %>"
-                                            onclick="window.location.href='login.jsp'" style="cursor: pointer;">
-                                            <img src="<%= (h.getImagenHabitacion() != null && !h.getImagenHabitacion().isEmpty()) ? h.getImagenHabitacion() : "https://placehold.co/200x150/cccccc/999999?text=Foto" %>" alt="Foto de
-                                            habitación" class="room-img">
+                                        <div class="room-card public cursor-pointer"
+                                            data-room-id="<%= h.getCodHabi() %>"
+                                            onclick="window.location.href='login.jsp'">
+                                            <img src="<%= (h.getImagenHabitacion() != null && !h.getImagenHabitacion().isEmpty()) ? h.getImagenHabitacion() : "https://placehold.co/200x150/cccccc/999999?text=Foto" %>" alt="Foto de habitación" class="room-img">
                                             <div class="room-info">
                                                 <p><strong>Dirección:</strong>
                                                     <%= h.getDireccion() %>
