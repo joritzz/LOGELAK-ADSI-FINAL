@@ -264,6 +264,19 @@ public class app extends HttpServlet {
                         result = "Solicitud " + nuevoEstado.toLowerCase() + ".";
                         view = "propietario";
                         break;
+                    case "rateRoom":
+                        int codHabiRate = Integer.parseInt(request.getParameter("codHabi"));
+                        int puntos = Integer.parseInt(request.getParameter("puntos"));
+
+                        models.Puntuacion p = new models.Puntuacion();
+                        p.setCodHabi(codHabiRate);
+                        p.setEmailInquilino(usuario.getEmail());
+                        p.setPuntos(puntos);
+
+                        utils.BD.insertPuntuacion(p);
+                        result = "Gracias por tu valoración.";
+                        view = "inquilino_alquileres";
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -284,6 +297,15 @@ public class app extends HttpServlet {
             case "inquilino_alquileres":
                 java.util.List<models.Alquiler> misAlquileresInquilino = utils.BD
                         .getAlquileresComoInquilino(usuario.getEmail());
+
+                java.util.Date now = new java.util.Date();
+                for (models.Alquiler a : misAlquileresInquilino) {
+                    if (a.getFechaFin() != null && a.getFechaFin().before(now)) {
+                        boolean rated = utils.BD.existePuntuacion(a.getCodHabi(), usuario.getEmail());
+                        a.setValorado(rated);
+                    }
+                }
+
                 request.setAttribute("misAlquileres", misAlquileresInquilino);
                 break;
             case "propietario_solicitudes":

@@ -422,6 +422,19 @@
                                                                                     <p><strong>Fin:</strong>
                                                                                         <%= a.getFechaFin() %>
                                                                                     </p>
+                                                                                    <% java.util.Date now=new
+                                                                                        java.util.Date(); if
+                                                                                        (a.getFechaFin() !=null &&
+                                                                                        a.getFechaFin().before(now) &&
+                                                                                        !a.isValorado()) { %>
+                                                                                        <button class="btn-primary"
+                                                                                            onclick="abrirModalValoracion(<%= a.getCodHabi() %>, '<%= (h !=null) ? h.getDireccion().replace("'", "\\'") : "" %>')">Valorar
+                                                                                            Estancia</button>
+                                                                                        <% } else if (a.isValorado()) {
+                                                                                            %>
+                                                                                            <p class="status-aceptada">
+                                                                                                Valorado ✓</p>
+                                                                                            <% } %>
                                                                                 </div>
                                                                             </div>
                                                                             <% } } else { %>
@@ -689,6 +702,26 @@
                                                                                                         <%= a.getFechaFin()
                                                                                                             %>
                                                                                                     </p>
+                                                                                                    <% java.util.Date
+                                                                                                        now=new
+                                                                                                        java.util.Date();
+                                                                                                        if
+                                                                                                        (a.getFechaFin().before(now)
+                                                                                                        &&
+                                                                                                        !a.isValorado())
+                                                                                                        { %>
+                                                                                                        <button
+                                                                                                            class="btn-primary"
+                                                                                                            onclick="abrirModalValoracion(<%= a.getCodHabi() %>, '<%= (h !=null) ? h.getDireccion().replace("'", "\\'") : "" %>')">Valorar
+                                                                                                            Estancia</button>
+                                                                                                        <% } else if
+                                                                                                            (a.isValorado())
+                                                                                                            { %>
+                                                                                                            <p
+                                                                                                                class="status-aceptada">
+                                                                                                                Valorado
+                                                                                                                ✓</p>
+                                                                                                            <% } %>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <% } } else { %>
@@ -701,6 +734,46 @@
                                                                             <% } %>
 
                                 </div>
+                                </div>
+
+                                <!-- Modal para valorar estancia -->
+                                <div id="modal-valoracion" class="modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header-icon">⭐</div>
+                                        <h3>Valorar Estancia</h3>
+                                        <div id="modal-rate-info" class="modal-room-info">
+                                            <h4 id="modal-rate-address"></h4>
+                                        </div>
+                                        <form action="app" method="post">
+                                            <input type="hidden" name="action" value="rateRoom">
+                                            <input type="hidden" name="codHabi" id="modal-rate-id-habitacion">
+
+                                            <p class="modal-instruction">¿Cómo valorarías tu estancia?</p>
+
+                                            <div class="rating-container">
+                                                <div class="star-rating">
+                                                    <input type="radio" id="star5" name="puntos" value="5" /><label
+                                                        for="star5" title="5 estrellas">★</label>
+                                                    <input type="radio" id="star4" name="puntos" value="4" /><label
+                                                        for="star4" title="4 estrellas">★</label>
+                                                    <input type="radio" id="star3" name="puntos" value="3" /><label
+                                                        for="star3" title="3 estrellas">★</label>
+                                                    <input type="radio" id="star2" name="puntos" value="2" /><label
+                                                        for="star2" title="2 estrellas">★</label>
+                                                    <input type="radio" id="star1" name="puntos" value="1" /><label
+                                                        for="star1" title="1 estrella">★</label>
+                                                    <input type="radio" id="star0" name="puntos" value="0" checked
+                                                        style="display:none;" />
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-actions">
+                                                <button type="button" class="btn-secondary"
+                                                    onclick="cerrarModalValoracion()">Cancelar</button>
+                                                <button type="submit" class="btn-primary">Enviar Valoración</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
 
                                 <!-- Modal para seleccionar fecha de solicitud -->
@@ -729,6 +802,16 @@
                                 </div>
 
                                 <script>
+                                    function abrirModalValoracion(id, direccion) {
+                                        document.getElementById('modal-rate-id-habitacion').value = id;
+                                        document.getElementById('modal-rate-address').textContent = direccion;
+                                        document.getElementById('modal-valoracion').style.display = 'flex';
+                                    }
+
+                                    function cerrarModalValoracion() {
+                                        document.getElementById('modal-valoracion').style.display = 'none';
+                                    }
+
                                     function abrirModalSolicitud(id, direccion, precio) {
                                         document.getElementById('modal-id-habitacion').value = id;
                                         document.getElementById('modal-room-address').textContent = direccion;

@@ -1062,3 +1062,42 @@ button:active {
     border: 3px solid #9ca3af;
     font-size: 1.1rem;
 }
+
+/* --- Rating Stars --- */
+.rating-container {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 2.5rem;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #fbbf24; /* Amber 400 */
+}
+
+.star-rating input:checked + label:hover,
+.star-rating input:checked + label:hover ~ label,
+.star-rating input:checked ~ label:hover,
+.star-rating input:checked ~ label:hover ~ label,
+.star-rating label:hover ~ input:checked ~ label {
+    color: #f59e0b; /* Amber 500 */
+}
