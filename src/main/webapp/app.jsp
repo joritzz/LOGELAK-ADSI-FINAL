@@ -1071,8 +1071,8 @@
                                                     '<p class="info-window-subtext">' + h.emailPropietario + '</p>' +
                                                     '<p class="info-window-subtext">Puntuación: ' + ((h.puntuacionMedia > 0) ? h.puntuacionMedia.toFixed(2) : "--") + '</p>' +
                                                     '<p class="info-window-price">' + h.precio + ' €/mes</p>' +
-                                                    '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ', \'' + fechaInicioVal + '\', \'' + fechaFinVal + '\')" ' +
-                                                    'class="info-window-btn">Solicitar</button>' +
+                                                    '<button type="button" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ', \'' + fechaInicioVal + '\', \'' + fechaFinVal + '\')" ' +
+                                                    'class="info-window-btn">Solicitar 📩</button>' +
                                                     '</div>';
 
                                                 marker.addListener("click", () => {
