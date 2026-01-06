@@ -1017,3 +1017,92 @@ button:active {
 .info-window-btn:hover {
     background: var(--primary-hover);
 }
+
+/* --- Room Rating Badge (New) --- */
+.room-card {
+    position: relative;
+    /* Ensure absolute positioning works for children */
+}
+
+.room-rating {
+    position: relative;
+    margin-top: 8px;
+    margin-left: auto;
+    width: fit-content;
+    font-size: 1.4rem;
+    /* Larger font size */
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rating-high {
+    color: #10b981;
+    /* Green */
+    border: 3px solid #10b981;
+}
+
+.rating-medium {
+    color: #f59e0b;
+    /* Yellow/Orange */
+    border: 3px solid #f59e0b;
+}
+
+.rating-low {
+    color: #ef4444;
+    /* Red */
+    border: 3px solid #ef4444;
+}
+
+.rating-none {
+    color: #9ca3af;
+    /* Gray */
+    border: 3px solid #9ca3af;
+    font-size: 1.1rem;
+}
+
+/* --- Rating Stars --- */
+.rating-container {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 2.5rem;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #fbbf24; /* Amber 400 */
+}
+
+.star-rating input:checked + label:hover,
+.star-rating input:checked + label:hover ~ label,
+.star-rating input:checked ~ label:hover,
+.star-rating input:checked ~ label:hover ~ label,
+.star-rating label:hover ~ input:checked ~ label {
+    color: #f59e0b; /* Amber 500 */
+}

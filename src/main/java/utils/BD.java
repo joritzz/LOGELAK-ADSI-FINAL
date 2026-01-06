@@ -444,4 +444,45 @@ public class BD {
         return new java.sql.Date(System.currentTimeMillis());
     }
 
+    public static double getMediaPuntuacion(int codHabi) {
+        String sql = "SELECT AVG(puntos) FROM puntuacion WHERE codHabi = ?";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setInt(1, codHabi);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public static void insertPuntuacion(models.Puntuacion p) {
+        String sql = "INSERT INTO puntuacion (codHabi, emailInquilino, puntos) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setInt(1, p.getCodHabi());
+            pstmt.setString(2, p.getEmailInquilino());
+            pstmt.setInt(3, p.getPuntos());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean existePuntuacion(int codHabi, String emailInquilino) {
+        String sql = "SELECT 1 FROM puntuacion WHERE codHabi = ? AND emailInquilino = ?";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setInt(1, codHabi);
+            pstmt.setString(2, emailInquilino);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

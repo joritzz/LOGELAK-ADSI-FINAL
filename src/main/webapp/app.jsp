@@ -46,17 +46,17 @@
 
 
                                     <nav class="app-nav">
-                                        <div class="nav-tab tab-consultar <%= " consultar".equals(currentView)
+                                        <div class="nav-tab tab-consultar <%= "consultar".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=consultar">Consultar</a>
                                         </div>
-                                        <div class="nav-tab tab-habitaciones <%= " habitaciones".equals(currentView)
+                                        <div class="nav-tab tab-habitaciones <%= "habitaciones".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=habitaciones">Habitaciones</a>
                                         </div>
 
                                         <!-- Inquilino Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith(" inquilino") ? "active"
+                                        <div class="nav-tab dropdown <%= currentView.startsWith("inquilino") ? "active"
                                             : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Inquilino</span>
                                             <div class="dropdown-content">
@@ -66,7 +66,7 @@
                                         </div>
 
                                         <!-- Propietario Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith(" propietario")
+                                        <div class="nav-tab dropdown <%= currentView.startsWith("propietario")
                                             ? "active" : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Propietario</span>
                                             <div class="dropdown-content">
@@ -209,6 +209,23 @@
                                                                     <p><strong>Precio:</strong>
                                                                         <%= h.getPrecioMes() %> €/mes
                                                                     </p>
+                                                                    <p><strong>Propietario:</strong>
+                                                                        <%= h.getEmailPropietario() %>
+                                                                    </p>
+                                                                    <% double
+                                                                        media=utils.BD.getMediaPuntuacion(h.getCodHabi());
+                                                                        String ratingClass="rating-none" ; if (media>
+                                                                        4.0) ratingClass = "rating-high";
+                                                                        else if (media > 2.5) ratingClass =
+                                                                        "rating-medium";
+                                                                        else if (media > 0) ratingClass = "rating-low";
+
+                                                                        String ratingText = (media > 0) ?
+                                                                        String.format("%.2f", media) : "--";
+                                                                        %>
+                                                                        <div class="room-rating <%= ratingClass %>">
+                                                                            <%= ratingText %>
+                                                                        </div>
                                                                 </div>
                                                                 <div class="room-actions">
                                                                     <button class="btn-solicitar"
@@ -263,6 +280,21 @@
                                                                         <p><strong>Precio:</strong>
                                                                             <%= h.getPrecioMes() %> €/mes
                                                                         </p>
+                                                                        <% double
+                                                                            media=utils.BD.getMediaPuntuacion(h.getCodHabi());
+                                                                            String ratingClass="rating-none" ; if
+                                                                            (media> 4.0) ratingClass = "rating-high";
+                                                                            else if (media > 2.5) ratingClass =
+                                                                            "rating-medium";
+                                                                            else if (media > 0) ratingClass =
+                                                                            "rating-low";
+
+                                                                            String ratingText = (media > 0) ?
+                                                                            String.format("%.2f", media) : "--";
+                                                                            %>
+                                                                            <div class="room-rating <%= ratingClass %>">
+                                                                                <%= ratingText %>
+                                                                            </div>
                                                                     </div>
                                                                 </div>
                                                                 <% } } else { %>
@@ -411,6 +443,19 @@
                                                                                     <p><strong>Fin:</strong>
                                                                                         <%= a.getFechaFin() %>
                                                                                     </p>
+                                                                                    <% java.util.Date now=new
+                                                                                        java.util.Date(); if
+                                                                                        (a.getFechaFin() !=null &&
+                                                                                        a.getFechaFin().before(now) &&
+                                                                                        !a.isValorado()) { %>
+                                                                                        <button class="btn-primary"
+                                                                                            onclick="abrirModalValoracion(<%= a.getCodHabi() %>, '<%= (h !=null) ? h.getDireccion().replace("'", "\\'") : "" %>')">Valorar
+                                                                                            Estancia</button>
+                                                                                        <% } else if (a.isValorado()) {
+                                                                                            %>
+                                                                                            <p class="status-aceptada">
+                                                                                                Valorado ✓</p>
+                                                                                            <% } %>
                                                                                 </div>
                                                                             </div>
                                                                             <% } } else { %>
@@ -699,6 +744,7 @@
                                                                                                         <%= a.getFechaFin()
                                                                                                             %>
                                                                                                     </p>
+
                                                                                                 </div>
                                                                                             </div>
                                                                                             <% } } else { %>
@@ -711,6 +757,46 @@
                                                                             <% } %>
 
                                 </div>
+                                </div>
+
+                                <!-- Modal para valorar estancia -->
+                                <div id="modal-valoracion" class="modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header-icon">⭐</div>
+                                        <h3>Valorar Estancia</h3>
+                                        <div id="modal-rate-info" class="modal-room-info">
+                                            <h4 id="modal-rate-address"></h4>
+                                        </div>
+                                        <form action="app" method="post">
+                                            <input type="hidden" name="action" value="rateRoom">
+                                            <input type="hidden" name="codHabi" id="modal-rate-id-habitacion">
+
+                                            <p class="modal-instruction">¿Cómo valorarías tu estancia?</p>
+
+                                            <div class="rating-container">
+                                                <div class="star-rating">
+                                                    <input type="radio" id="star5" name="puntos" value="5" /><label
+                                                        for="star5" title="5 estrellas">★</label>
+                                                    <input type="radio" id="star4" name="puntos" value="4" /><label
+                                                        for="star4" title="4 estrellas">★</label>
+                                                    <input type="radio" id="star3" name="puntos" value="3" /><label
+                                                        for="star3" title="3 estrellas">★</label>
+                                                    <input type="radio" id="star2" name="puntos" value="2" /><label
+                                                        for="star2" title="2 estrellas">★</label>
+                                                    <input type="radio" id="star1" name="puntos" value="1" /><label
+                                                        for="star1" title="1 estrella">★</label>
+                                                    <input type="radio" id="star0" name="puntos" value="0" checked
+                                                        style="display:none;" />
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-actions">
+                                                <button type="button" class="btn-secondary"
+                                                    onclick="cerrarModalValoracion()">Cancelar</button>
+                                                <button type="submit" class="btn-primary">Enviar Valoración</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
 
                                 <!-- Modal para seleccionar fecha de solicitud -->
@@ -741,6 +827,16 @@
                                 </div>
 
                                 <script>
+                                    function abrirModalValoracion(id, direccion) {
+                                        document.getElementById('modal-rate-id-habitacion').value = id;
+                                        document.getElementById('modal-rate-address').textContent = direccion;
+                                        document.getElementById('modal-valoracion').style.display = 'flex';
+                                    }
+
+                                    function cerrarModalValoracion() {
+                                        document.getElementById('modal-valoracion').style.display = 'none';
+                                    }
+
                                     function abrirModalSolicitud(id, direccion, precio, fechaInicio, fechaFin) {
                                         document.getElementById('modal-id-habitacion').value = id;
                                         document.getElementById('modal-fecha-inicio').value = fechaInicio;
@@ -909,6 +1005,28 @@
 
                                         habitaciones.forEach(h => {
                                             // Add to List
+                                            let ratingVal = "--";
+                                            let ratingClass = "rating-none";
+
+                                            if (h.puntuacionMedia > 0) {
+                                                ratingVal = h.puntuacionMedia.toFixed(2);
+                                                if (h.puntuacionMedia > 4.0) ratingClass = "rating-high";
+                                                else if (h.puntuacionMedia > 2.5) ratingClass = "rating-medium";
+                                                else ratingClass = "rating-low";
+                                            }
+
+                                            // Calculate Dates for Map Request
+                                            let fechaInicioVal = "";
+                                            let fechaFinVal = "";
+                                            if (h.fechaDisponible) {
+                                                fechaInicioVal = h.fechaDisponible;
+                                                let d = new Date(h.fechaDisponible);
+                                                if (!isNaN(d.getTime())) {
+                                                    d.setMonth(d.getMonth() + 1);
+                                                    fechaFinVal = d.toISOString().split('T')[0];
+                                                }
+                                            }
+
                                             const cardDiv = document.createElement("div");
                                             cardDiv.className = "room-card";
                                             cardDiv.innerHTML =
@@ -917,10 +1035,12 @@
                                                 '<h4>' + h.direccion + '</h4>' +
                                                 '<p><strong>Ciudad:</strong> ' + h.ciudad + '</p>' +
                                                 '<p><strong>Precio:</strong> ' + h.precio + ' €/mes</p>' +
+                                                '<p><strong>Propietario:</strong> ' + h.emailPropietario + '</p>' +
                                                 '<p><strong>Disponible:</strong> ' + h.fechaDisponible + '</p>' +
+                                                '<div class="room-rating ' + ratingClass + '">' + ratingVal + '</div>' +
                                                 '</div>' +
                                                 '<div class="room-actions">' +
-                                                '<button class="btn-solicitar" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')">Solicitar 📩</button>' +
+                                                '<button class="btn-solicitar" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ', \'' + fechaInicioVal + '\', \'' + fechaFinVal + '\')">Solicitar 📩</button>' +
                                                 '</div>';
                                             resultsContainer.appendChild(cardDiv);
 
@@ -949,9 +1069,10 @@
                                                     '<h5 class="info-window-title">' + h.direccion + '</h5>' +
                                                     '<p class="info-window-text">Disponible desde: ' + h.fechaDisponible + '</p>' +
                                                     '<p class="info-window-subtext">' + h.emailPropietario + '</p>' +
+                                                    '<p class="info-window-subtext">Puntuación: ' + ((h.puntuacionMedia > 0) ? h.puntuacionMedia.toFixed(2) : "--") + '</p>' +
                                                     '<p class="info-window-price">' + h.precio + ' €/mes</p>' +
-                                                    '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')" ' +
-                                                    'class="info-window-btn">Solicitar</button>' +
+                                                    '<button type="button" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ', \'' + fechaInicioVal + '\', \'' + fechaFinVal + '\')" ' +
+                                                    'class="info-window-btn">Solicitar 📩</button>' +
                                                     '</div>';
 
                                                 marker.addListener("click", () => {
