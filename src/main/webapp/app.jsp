@@ -224,7 +224,43 @@
                                         <!-- VISTA HABITACIONES -->
                                         <% if ("habitaciones".equals(currentView)) { %>
                                             <div id="content-habitaciones" class="content active">
-                                                <div class="sub-nav">
+                                                
+
+                                                <div id="view-ver-mis-habi" class="subtab-content">
+                                                    <h3>Mis Habitaciones Publicadas</h3>
+                                                    <div class="results-grid">
+                                                        <% List<Habitacion> misHabitaciones = (List<Habitacion>)
+                                                                request.getAttribute("misHabitaciones");
+                                                                if (misHabitaciones != null &&
+                                                                !misHabitaciones.isEmpty()) {
+                                                                for (Habitacion h : misHabitaciones) {
+                                                                String img = (h.getImagenHabitacion() != null) ?
+                                                                h.getImagenHabitacion() :
+                                                                "https://placehold.co/200x150?text=Sin+Foto";
+                                                                %>
+                                                                <div class="room-card">
+                                                                    <img src="<%= img %>" alt="Foto" class="room-img">
+                                                                    <div class="room-info">
+                                                                        <h4>
+                                                                            <%= h.getDireccion() %>
+                                                                        </h4>
+                                                                        <p><strong>ID:</strong>
+                                                                            <%= h.getCodHabi() %>
+                                                                        </p>
+                                                                        <p><strong>Ciudad:</strong>
+                                                                            <%= h.getCiudad() %>
+                                                                        </p>
+                                                                        <p><strong>Precio:</strong>
+                                                                            <%= h.getPrecioMes() %> €/mes
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <% } } else { %>
+                                                                    <p>No tienes habitaciones publicadas.</p>
+                                                                    <% } %>
+                                                    </div>
+                                                </div>
+                                                    <div class="sub-nav">
                                                     <h3>Añadir Habitación</h3>
                                                 </div>
                                                 <div id="view-anadir" class="subtab-content">
@@ -265,41 +301,6 @@
                                                         <button type="submit" class="btn-primary">Publicar
                                                             Habitación</button>
                                                     </form>
-                                                </div>
-
-                                                <div id="view-ver-mis-habi" class="subtab-content">
-                                                    <h3>Mis Habitaciones Publicadas</h3>
-                                                    <div class="results-grid">
-                                                        <% List<Habitacion> misHabitaciones = (List<Habitacion>)
-                                                                request.getAttribute("misHabitaciones");
-                                                                if (misHabitaciones != null &&
-                                                                !misHabitaciones.isEmpty()) {
-                                                                for (Habitacion h : misHabitaciones) {
-                                                                String img = (h.getImagenHabitacion() != null) ?
-                                                                h.getImagenHabitacion() :
-                                                                "https://placehold.co/200x150?text=Sin+Foto";
-                                                                %>
-                                                                <div class="room-card">
-                                                                    <img src="<%= img %>" alt="Foto" class="room-img">
-                                                                    <div class="room-info">
-                                                                        <h4>
-                                                                            <%= h.getDireccion() %>
-                                                                        </h4>
-                                                                        <p><strong>ID:</strong>
-                                                                            <%= h.getCodHabi() %>
-                                                                        </p>
-                                                                        <p><strong>Ciudad:</strong>
-                                                                            <%= h.getCiudad() %>
-                                                                        </p>
-                                                                        <p><strong>Precio:</strong>
-                                                                            <%= h.getPrecioMes() %> €/mes
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <% } } else { %>
-                                                                    <p>No tienes habitaciones publicadas.</p>
-                                                                    <% } %>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <% } %>
