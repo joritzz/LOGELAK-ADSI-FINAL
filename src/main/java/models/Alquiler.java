@@ -18,7 +18,7 @@ public class Alquiler {
     private Date fechaInicio;
     private Date fechaFin;
 
-    // Transient
+    // Transitorio
     private Habitacion habitacion;
 
     public Alquiler() {

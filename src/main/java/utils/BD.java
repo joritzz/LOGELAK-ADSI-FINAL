@@ -77,7 +77,6 @@ public class BD {
     public static List<Habitacion> getHabitacionesCercanas(double myLat, double myLng, double radioKm, Date fechaInicio,
             Date fechaFin, String excludeEmail) {
         List<Habitacion> lista = new ArrayList<>();
-        // Haversine formula in SQL
         String sql;
         boolean checkDates = (fechaInicio != null && fechaFin != null);
 

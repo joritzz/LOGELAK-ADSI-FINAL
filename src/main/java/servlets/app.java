@@ -20,21 +20,12 @@ import jakarta.servlet.annotation.MultipartConfig;
 @WebServlet(name = "app", urlPatterns = { "/app" })
 public class app extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
 
-        // 1. Session Validation
+        // 1. Validación de sesión
         jakarta.servlet.http.HttpSession session = request.getSession(false);
         models.Usuario usuario = (session != null) ? (models.Usuario) session.getAttribute("usuario") : null;
 
@@ -43,7 +34,7 @@ public class app extends HttpServlet {
             return;
         }
 
-        // Initialize BD connection (safe to call multiple times if handled in BD)
+        // Inicializar conexión BD (seguro de llamar múltiples veces si se maneja en BD)
         utils.BD.getConexion();
 
         String result = "";
@@ -51,11 +42,11 @@ public class app extends HttpServlet {
         String action = request.getParameter("action");
 
         if (view == null) {
-            view = "consultar"; // Default view
+            view = "consultar"; // Vista por defecto
         }
 
         try {
-            // 2. Action Handling
+            // 2. Manejo de acciones
             if (action != null) {
                 switch (action) {
                     case "logout":
@@ -86,18 +77,17 @@ public class app extends HttpServlet {
 
                             java.util.List<models.Habitacion> habitaciones;
 
-                            // If geolocation is provided
+                            // Si se proporciona geolocalización
                             if (latStr != null && !latStr.isEmpty() && lngStr != null && !lngStr.isEmpty()) {
                                 double myLat = Double.parseDouble(latStr);
                                 double myLng = Double.parseDouble(lngStr);
 
-                                double radius = 20.0; // Default
+                                double radius = 20.0;
                                 String radiusStr = request.getParameter("radius");
                                 if (radiusStr != null && !radiusStr.isEmpty()) {
                                     try {
                                         radius = Double.parseDouble(radiusStr);
                                     } catch (NumberFormatException e) {
-                                        // Keep default
                                     }
                                 }
 
@@ -108,17 +98,17 @@ public class app extends HttpServlet {
                                 request.setAttribute("searchLng", myLng);
                                 request.setAttribute("searchRadius", radius);
                             } else {
-                                // Standard City Search (Dates Required)
+                                // Búsqueda estándar por ciudad (Fechas requeridas)
                                 if (fechaInicio != null && fechaFin != null) {
                                     habitaciones = utils.BD.getHabitacionesDisponibles(ciudad, fechaInicio, fechaFin,
                                             usuario.getEmail());
                                 } else {
-                                    habitaciones = new java.util.ArrayList<>(); // Should not happen given outer if, but
-                                                                                // safety
+                                    habitaciones = new java.util.ArrayList<>();
+                                                                                
                                 }
                             }
 
-                            // JSON Response for AJAX
+                            // Respuesta JSON para AJAX
                             String responseMode = request.getParameter("responseMode");
                             if ("json".equals(responseMode)) {
                                 response.setContentType("application/json");
@@ -129,7 +119,7 @@ public class app extends HttpServlet {
                                     models.Habitacion h = habitaciones.get(i);
                                     String img = (h.getImagenHabitacion() != null)
                                             ? h.getImagenHabitacion().replace("\\", "/")
-                                            : "https://placehold.co/200x150?text=Sin+Foto";
+                                            : "image/no-image.png";
                                     String direccion = (h.getDireccion() != null)
                                             ? h.getDireccion().replace("\"", "\\\"")
                                             : "";
@@ -158,11 +148,11 @@ public class app extends HttpServlet {
                                 out.print("]");
                                 out.flush();
                                 System.out.println("JSON Response sent. Rooms count: " + habitaciones.size());
-                                return; // Stop execution here, do not forward to JSP
+                                return;
                             }
 
                             request.setAttribute("searchResults", habitaciones);
-                            request.setAttribute("searchCity", ciudad); // To keep selected option
+                            request.setAttribute("searchCity", ciudad);
                             request.setAttribute("searchDateStart", fechaInicioStr);
                             request.setAttribute("searchDateEnd", fechaFinStr);
                         }
@@ -178,14 +168,12 @@ public class app extends HttpServlet {
                                 ? Integer.parseInt(request.getParameter("precio"))
                                 : 0;
 
-                        // Handle File Upload
-                        String imagenPath = "https://placehold.co/600x400?text=Sin+Foto"; // Default
+                        String imagenPath = "image/no-image.png";
                         try {
                             jakarta.servlet.http.Part filePart = request.getPart("imagen");
                             if (filePart != null && filePart.getSize() > 0) {
                                 String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName()
                                         .toString();
-                                // Clean filename to avoid issues
                                 fileName = System.currentTimeMillis() + "_" + fileName.replaceAll("\\s+", "_");
 
                                 String uploadPath = getServletContext().getRealPath("") + java.io.File.separator
@@ -246,8 +234,7 @@ public class app extends HttpServlet {
                             s.setFechaPosibleInicioAlquiler(sdf.parse(fInicio));
                             s.setFechaPosibleFinAlquiler(sdf.parse(fFin));
                         } else {
-                            // Fallback or error handling if dates are missing, though UI enforces them
-                            s.setFechaPosibleInicioAlquiler(new java.util.Date()); // Prevents null pointer in BD
+                            s.setFechaPosibleInicioAlquiler(new java.util.Date());
                             s.setFechaPosibleFinAlquiler(new java.util.Date());
                         }
 
@@ -257,7 +244,7 @@ public class app extends HttpServlet {
                         } else {
                             result = "Error: Ya has enviado una solicitud para esta habitación (o ocurrió un error interno).";
                         }
-                        view = "inquilino_solicitudes"; // Redirect to specific view
+                        view = "inquilino_solicitudes";
                         break;
 
                     case "updateRequest":
@@ -320,7 +307,7 @@ public class app extends HttpServlet {
             result = "Error: " + e.getMessage();
         }
 
-        // 3. View Data Loading
+        // 3. Carga de datos de vista
         switch (view) {
             case "habitaciones":
                 java.util.List<models.Habitacion> misHabitaciones = utils.BD.getMisHabitaciones(usuario.getEmail());
@@ -348,7 +335,7 @@ public class app extends HttpServlet {
                 java.util.List<models.Solicitud> solicitudesEntrantes = utils.BD
                         .getSolicitudesEntrantes(usuario.getEmail());
 
-                // AUTO-REJECT LOGIC: Check for overlaps with existing rentals
+                // LÓGICA DE AUTO-RECHAZO: Comprobar solapamientos con alquileres existentes
                 java.util.List<models.Alquiler> misAlquileresProp = utils.BD
                         .getAlquileresComoPropietario(usuario.getEmail());
 
@@ -357,26 +344,25 @@ public class app extends HttpServlet {
                         if ("Pendiente".equalsIgnoreCase(s.getEstado())) {
                             for (models.Alquiler a : misAlquileresProp) {
                                 if (s.getCodHabi() == a.getCodHabi()) {
-                                    // Check overlap: StartA < EndB && EndA > StartB
-                                    // Using getTime() for safe comparison
+                                    // Comprobar solapamiento: InicioA < FinB && FinA > InicioB
                                     long sStart = s.getFechaPosibleInicioAlquiler().getTime();
                                     long sEnd = s.getFechaPosibleFinAlquiler().getTime();
                                     long aStart = a.getFechaInicio().getTime();
                                     long aEnd = a.getFechaFin().getTime();
 
                                     if (sStart < aEnd && sEnd > aStart) {
-                                        // Overlap found
+                                        // Hay solapamiento
                                         utils.BD.updateEstadoSolicitud(s.getCodHabi(), s.getEmailInquilino(),
                                                 s.getFechaPosibleInicioAlquiler(), "Rechazada");
                                         s.setEstado("Rechazada");
-                                        break; // Stop checking other rentals for this request
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
                 }
-                // Group requests by Habitacion
+                // Solicitudes por habitacion
                 java.util.Map<Integer, java.util.List<models.Solicitud>> solicitudesPorHabitacion = new java.util.HashMap<>();
                 for (models.Solicitud s : solicitudesEntrantes) {
                     models.Habitacion h = s.getHabitacion();
@@ -390,11 +376,8 @@ public class app extends HttpServlet {
             case "propietario_alquileres":
                 java.util.List<models.Alquiler> misAlquileresPropietario = utils.BD
                         .getAlquileresComoPropietario(usuario.getEmail());
-                request.setAttribute("misAlquileres", misAlquileresPropietario); // Reuse attribute name or use
-                                                                                 // separate? "misAlquileres" is fine if
-                                                                                 // JSP adapts
+                request.setAttribute("misAlquileres", misAlquileresPropietario);
                 break;
-            // Legacy/Direct mappings if needed fallback, or just for "Consultar"
         }
 
         request.setAttribute("currentView", view);
@@ -405,44 +388,23 @@ public class app extends HttpServlet {
         request.getRequestDispatcher("app.jsp").forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

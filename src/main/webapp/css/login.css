@@ -67,7 +67,7 @@ body {
     background-color: #fff;
 }
 
-/* Mensaje de error */
+
 .error-message {
     color: #b91c1c;
     background-color: #fef2f2;
@@ -129,4 +129,28 @@ button[type="submit"]:active {
 
 #toggle-password:hover {
     color: #dc2626;
+}
+
+/* Toggle Password Styles */
+.relative-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.input-password {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.error-visible {
+    display: block;
+    color: #b91c1c;
+    margin-bottom: 10px;
 }

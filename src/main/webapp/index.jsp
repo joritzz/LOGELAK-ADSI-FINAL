@@ -56,9 +56,8 @@
                                 <div class="form-group">
                                     <label for="search-date-start">Fecha Inicio:</label>
                                     <input type="date" id="search-date-start" name="fechaInicio"
-                                        placeholder="AAAA/MM/DD" min="<%= java.time.LocalDate.now() %>"
-                                        value="<%= request.getParameter(" fechaInicio") !=null ?
-                                        request.getParameter("fechaInicio") : "" %>">
+                                        placeholder="AAAA/MM/DD" 
+                                        min="<%= java.time.LocalDate.now() %>" value="<%= request.getParameter("fechaInicio") !=null ? request.getParameter("fechaInicio") : "" %>">
                                 </div>
                                 <div class="form-group">
                                     <label for="search-date-end">Fecha Fin:</label>
@@ -84,7 +83,7 @@
                                         <div class="room-card public cursor-pointer"
                                             data-room-id="<%= h.getCodHabi() %>"
                                             onclick="window.location.href='login.jsp'">
-                                            <img src="<%= (h.getImagenHabitacion() != null && !h.getImagenHabitacion().isEmpty()) ? h.getImagenHabitacion() : "https://placehold.co/200x150/cccccc/999999?text=Foto" %>" alt="Foto de habitación" class="room-img">
+                                            <img src="<%= (h.getImagenHabitacion() != null && !h.getImagenHabitacion().isEmpty()) ? h.getImagenHabitacion() : "image/no-image.png" %>" alt="Foto de habitación" class="room-img">
                                             <div class="room-info">
                                                 <p><strong>Dirección:</strong>
                                                     <%= h.getDireccion() %>

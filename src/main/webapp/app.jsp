@@ -77,26 +77,26 @@
                                     </nav>
 
                                     <script>
-                                        /* Dropdown Toggle Logic */
+                                        /* Lógica de alternancia del menú desplegable */
                                         function toggleDropdown(event) {
-                                            event.stopPropagation(); // Prevent immediate closing
+                                            event.stopPropagation(); // Evitar un cierre inmediato
 
-                                            // Close all other dropdowns
+                                            // Cerrar todos los demás menús desplegables
                                             var dropdowns = document.getElementsByClassName("dropdown-content");
                                             for (var i = 0; i < dropdowns.length; i++) {
                                                 var openDropdown = dropdowns[i];
-                                                // If it's not the sibling of the clicked trigger, hide it
+                                                // Si no es el hermano del disparador pulsado, ocúltalo
                                                 if (openDropdown !== event.currentTarget.nextElementSibling) {
                                                     openDropdown.classList.remove('show');
                                                 }
                                             }
 
-                                            // Toggle the clicked one
+                                            // Alternar el pulsado
                                             var content = event.currentTarget.nextElementSibling;
                                             content.classList.toggle("show");
                                         }
 
-                                        // Close the dropdown if the user clicks outside of it
+                                        // Cierra el menú si el usuario hace clic fuera de él
                                         window.onclick = function (event) {
                                             if (!event.target.matches('.dropdown-trigger')) {
                                                 var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -123,7 +123,7 @@
                                                         onclick="switchSearchTab('map')">Búsqueda por Mapa</button>
                                                 </div>
 
-                                                <!-- GENERIC SEARCH FORM -->
+                                                <!-- FORMULARIO DE BÚSQUEDA GENÉRICA -->
                                                 <div id="search-generic" class="search-tab-content">
                                                     <form action="app" method="post" class="search-form">
                                                         <input type="hidden" name="action" value="search">
@@ -158,7 +158,7 @@
                                                     </form>
                                                 </div>
 
-                                                <!-- MAP SEARCH FORM -->
+                                                <!-- FORMULARIO DE BÚSQUEDA POR MAPA -->
                                                 <div id="search-map" class="search-tab-content d-none">
                                                     <form action="app" method="post" id="map-search-form">
                                                         <input type="hidden" name="action" value="search">
@@ -180,9 +180,6 @@
                                                         </div>
 
 
-
-
-                                                        <!-- Search triggered automatically by map interaction -->
                                                     </form>
                                                     </form>
                                                 </div>
@@ -276,6 +273,9 @@
                                                                         </p>
                                                                         <p><strong>Ciudad:</strong>
                                                                             <%= h.getCiudad() %>
+                                                                        </p>
+                                                                        <p><strong>Cordenadas:</strong>
+                                                                            <%= h.getLatitudH() %>, <%= h.getLongitudH() %>
                                                                         </p>
                                                                         <p><strong>Precio:</strong>
                                                                             <%= h.getPrecioMes() %> €/mes
@@ -443,13 +443,14 @@
                                                                                     <p><strong>Fin:</strong>
                                                                                         <%= a.getFechaFin() %>
                                                                                     </p>
-                                                                                    <% java.util.Date now=new
+                                                                                    <% String escapedAddress = (h != null) ? h.getDireccion().replace("'", "\\'") : ""; %>
+                                                                                        <% java.util.Date now=new
                                                                                         java.util.Date(); if
                                                                                         (a.getFechaFin() !=null &&
                                                                                         a.getFechaFin().before(now) &&
                                                                                         !a.isValorado()) { %>
                                                                                         <button class="btn-primary"
-                                                                                            onclick="abrirModalValoracion(<%= a.getCodHabi() %>, '<%= (h !=null) ? h.getDireccion().replace("'", "\\'") : "" %>')">Valorar
+                                                                                            onclick="abrirModalValoracion(<%= a.getCodHabi() %>, '<%= escapedAddress %>')">Valorar
                                                                                             Estancia</button>
                                                                                         <% } else if (a.isValorado()) {
                                                                                             %>
@@ -471,7 +472,7 @@
                                                                     %>
                                                                     <div id="content-propietario"
                                                                         class="content active">
-                                                                        <h3>Solicitudes Recibidas (Por Habitación)</h3>
+                                                                        <h3>Solicitudes Recibidas</h3>
                                                                         <div class="results-grid">
                                                                             <% java.util.Map<Integer, List<Solicitud>>
                                                                                 solicitudesPorHabitacion =
@@ -539,7 +540,7 @@
                                                                                                     </button>
                                                                                                 </div>
 
-                                                                                                <!-- Nested Requests List (Hidden by default) -->
+                                                                                                <!-- Lista de solicitudes anidadas (oculta por defecto) -->
                                                                                                 <div id="requests-<%= h.getCodHabi() %>"
                                                                                                     class="requests-container">
                                                                                                     <% for (Solicitud s
@@ -851,28 +852,28 @@
                                     }
 
                                     function switchSearchTab(tab) {
-                                        // Update Buttons
+                                        // Actualizar botones
                                         document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
                                         if (tab === 'generic') document.getElementById('btn-tab-generic').classList.add('active');
                                         else document.getElementById('btn-tab-map').classList.add('active');
 
-                                        // Update Content
+                                        // Actualizar contenido
                                         document.querySelectorAll('.search-tab-content').forEach(c => c.style.display = 'none');
                                         if (tab === 'generic') document.getElementById('search-generic').style.display = 'block';
                                         else document.getElementById('search-map').style.display = 'block';
 
-                                        // Resize map if visible
+                                        // Redimensionar el mapa si es visible
                                         if (tab === 'map' && map) {
                                             setTimeout(() => google.maps.event.trigger(map, 'resize'), 100);
                                         }
                                     }
 
-                                    // Map Variables
+                                    // Variables del mapa
                                     let map, centerMarker, searchCircle;
                                     let resultMarkers = [];
 
                                     async function initMap() {
-                                        // Request needed libraries
+                                        // Solicitar librerías necesarias
                                         const { Map } = await google.maps.importLibrary("maps");
                                         const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
@@ -886,12 +887,12 @@
 
                                         window.map = map;
 
-                                        // Click Listener to set Search Center
+                                        // Listener de clic para establecer el centro de búsqueda
                                         map.addListener("click", (e) => {
                                             placeCenterMarker(e.latLng);
                                         });
 
-                                        // Slider Listener
+                                        // Listener del deslizador
                                         const slider = document.getElementById("radius-slider");
                                         const radiusVal = document.getElementById("radius-val");
 
@@ -908,13 +909,13 @@
                                             if (searchCircle) {
                                                 searchCircle.setRadius(radius * 1000);
                                             }
-                                            // Trigger search on slider release if marker exists
+                                            // Activar búsqueda al soltar el deslizador si existe marcador
                                             if (centerMarker) {
                                                 buscarPorGeolocalizacion(centerMarker.position);
                                             }
                                         });
 
-                                        // Initial Search if previous state exists
+                                        // Búsqueda inicial si existe estado previo
                                         const initLat = parseFloat(document.getElementById("map-lat").value);
                                         const initLng = parseFloat(document.getElementById("map-lng").value);
 
@@ -925,13 +926,13 @@
                                     }
 
                                     async function placeCenterMarker(latLng) {
-                                        // Remove old
+                                        // Eliminar anterior
                                         if (centerMarker) centerMarker.map = null;
                                         if (searchCircle) searchCircle.setMap(null);
 
                                         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
-                                        // Create a pin for the center
+                                        // Crear un pin para el centro
                                         const pinElement = new PinElement({
                                             background: "#2563eb",
                                             borderColor: "#1e40af",
@@ -939,7 +940,7 @@
                                             scale: 1.2
                                         });
 
-                                        // Add Marker (Advanced)
+                                        // Añadir marcador (Avanzado)
                                         centerMarker = new AdvancedMarkerElement({
                                             map: map,
                                             position: latLng,
@@ -947,7 +948,7 @@
                                             content: pinElement.element
                                         });
 
-                                        // Create Circle (radius logic remains same)
+                                        // Crear círculo (lógica de radio se mantiene)
                                         const radiusKm = parseInt(document.getElementById("radius-slider").value);
                                         searchCircle = new google.maps.Circle({
                                             strokeColor: "#2563eb",
@@ -960,14 +961,14 @@
                                             radius: radiusKm * 1000
                                         });
 
-                                        // Update Inputs
+                                        // Actualizar entradas
                                         let lat = (typeof latLng.lat === 'function') ? latLng.lat() : latLng.lat;
                                         let lng = (typeof latLng.lng === 'function') ? latLng.lng() : latLng.lng;
 
                                         document.getElementById("map-lat").value = lat;
                                         document.getElementById("map-lng").value = lng;
 
-                                        // Trigger search
+                                        // Activar búsqueda
                                         const pos = { lat: lat, lng: lng };
                                         buscarPorGeolocalizacion(pos);
                                     }
@@ -991,7 +992,7 @@
                                         console.log("Resultados recibidos:", habitaciones);
                                         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
-                                        // Clear previous results markers
+                                        // Limpiar marcadores de resultados anteriores
                                         resultMarkers.forEach(m => m.map = null);
                                         resultMarkers = [];
 
@@ -1004,7 +1005,7 @@
                                         }
 
                                         habitaciones.forEach(h => {
-                                            // Add to List
+                                            // Añadir a la lista
                                             let ratingVal = "--";
                                             let ratingClass = "rating-none";
 
@@ -1015,7 +1016,7 @@
                                                 else ratingClass = "rating-low";
                                             }
 
-                                            // Calculate Dates for Map Request
+                                            // Calcular fechas para solicitud por mapa
                                             let fechaInicioVal = "";
                                             let fechaFinVal = "";
                                             if (h.fechaDisponible) {
@@ -1044,7 +1045,7 @@
                                                 '</div>';
                                             resultsContainer.appendChild(cardDiv);
 
-                                            // Add Marker
+                                            // Añadir marcador
                                             if (h.lat && h.lng) {
                                                 const pinResult = new PinElement({
                                                     background: "#ef4444",
@@ -1060,8 +1061,7 @@
                                                     content: pinResult.element
                                                 });
 
-                                                // InfoWindow
-                                                // InfoWindow
+                                                // Ventana de información
                                                 const infoWindow = new google.maps.InfoWindow();
                                                 const contentString =
                                                     '<div class="info-window-content">' +
@@ -1084,17 +1084,16 @@
                                         });
                                     }
 
-                                    // Placeholder for plotResults needed to avoid break if called
                                     function plotResults() { }
 
                                     function toggleDropdown(event) {
                                         event.stopPropagation();
 
-                                        // Find the dropdown content relative to the clicked element (which is the .nav-tab container)
+                                        // Encontrar el contenido desplegable relativo al elemento clicado (que es el contenedor .nav-tab)
                                         var target = event.currentTarget;
                                         var content = target.querySelector('.dropdown-content');
 
-                                        // Close all other dropdowns
+                                        // Cerrar todos los demás menús desplegables
                                         var dropdowns = document.getElementsByClassName("dropdown-content");
                                         for (var i = 0; i < dropdowns.length; i++) {
                                             var openDropdown = dropdowns[i];
@@ -1103,7 +1102,7 @@
                                             }
                                         }
 
-                                        // Toggle the current one
+                                        // Alternar el actual
                                         if (content) {
                                             content.classList.toggle("show");
                                         }
@@ -1113,7 +1112,7 @@
                                         document.getElementById('modal-solicitud').style.display = 'none';
                                     }
 
-                                    // Date Validation
+                                    // Validación de fecha
                                     document.addEventListener("DOMContentLoaded", function () {
                                         const startDateInput = document.getElementById("search-date-start");
                                         const endDateInput = document.getElementById("search-date-end");
@@ -1126,7 +1125,7 @@
                                         }
 
                                         if (startDateInput && endDateInput) {
-                                            // Initial check
+                                            // Comprobación inicial
                                             if (startDateInput.value) {
                                                 endDateInput.min = getNextDay(startDateInput.value);
                                             }
@@ -1154,14 +1153,14 @@
                                         }
                                     });
 
-                                    // Check if we should switch to map tab on load
+                                    // Comprobar si debemos cambiar a la pestaña del mapa al cargar
                                     window.onload = function () {
                                         <% if ("geo".equals(request.getAttribute("searchResultType"))) { %>
                                             switchSearchTab('map');
                                         <% } %>
                                     };
                                 </script>
-                                <!-- REPLACE 'YOUR_API_KEY' WITH YOUR REAL GOOGLE MAPS API KEY -->
+                                <!-- REEMPLAZA 'YOUR_API_KEY' CON TU CLAVE REAL DE LA API DE GOOGLE MAPS -->
                                 <script async defer
                                     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvdjFYsyR3pApY0mFmXSIyewD6tTMlQGU&callback=initMap&libraries=places,marker"></script>
                         </body>

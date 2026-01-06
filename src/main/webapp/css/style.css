@@ -1,44 +1,44 @@
-/* Estilos generales modernos y atractivos - Tema Gris y Rojo */
+
 :root {
-    /* Primary Color: Red */
+    
     --primary-color: #dc2626;
-    /* Red 600 */
+    
     --primary-hover: #b91c1c;
-    /* Red 700 */
+    
 
-    /* Secondary Color: Darker Gray */
+    
     --secondary-color: #4b5563;
-    /* Gray 600 */
+    
 
-    /* Accent Color: Light Red */
+    
     --accent-color: #fca5a5;
-    /* Red 300 */
+    
 
-    /* Backgrounds */
+    
     --background-color: #f3f4f6;
-    /* Gray 100 */
+    
     --surface-color: #ffffff;
 
-    /* Text Colors */
+    
     --text-primary: #111827;
-    /* Gray 900 */
+    
     --text-secondary: #4b5563;
-    /* Gray 600 */
+    
     --text-muted: #9ca3af;
-    /* Gray 400 */
+    
 
-    /* Borders & Shadows */
+    
     --border-color: #e5e7eb;
-    /* Gray 200 */
+    
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-    /* Gradients */
+    
     --gradient-primary: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     --gradient-bg: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
 
-    /* Radius */
+    
     --radius-md: 0.5rem;
     --radius-lg: 1rem;
 }
@@ -64,7 +64,7 @@ body {
     display: none !important;
 }
 
-/* Utilities for replacing inline styles */
+
 .w-100 {
     width: 100% !important;
 }
@@ -113,7 +113,7 @@ body {
     padding: 1.5rem !important;
 }
 
-/* --- Glassmorphism Utilities (Updated for cleaner look) --- */
+
 .glass-panel {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -122,7 +122,7 @@ body {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* --- Header --- */
+
 .main-header {
     background: #ffffff;
     border-bottom: 1px solid var(--border-color);
@@ -164,7 +164,7 @@ body {
     color: var(--primary-color);
 }
 
-/* --- Formularios (Genérico) --- */
+
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -194,7 +194,7 @@ body {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-    /* Red focus ring */
+    
     background-color: #fff;
 }
 
@@ -221,7 +221,7 @@ button:active {
     transform: translateY(0);
 }
 
-/* --- Vista Pública (index.html) --- */
+
 #public-search-page {
     padding: 3rem 2rem;
     max-width: 1200px;
@@ -266,14 +266,14 @@ button:active {
     font-size: 1.5rem;
 }
 
-/* --- Grid Layout for Results --- */
+
 .results-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
 }
 
-/* --- Tarjeta de Habitación (Resultado) --- */
+
 .room-card {
     background: #ffffff;
     border: 1px solid var(--border-color);
@@ -329,7 +329,7 @@ button:active {
     margin-top: auto;
 }
 
-/* Regla clave del PDF: Foto difuminada */
+
 .room-card.public img {
     filter: blur(8px);
     transition: filter 0.3s ease, transform 0.5s ease;
@@ -339,7 +339,7 @@ button:active {
     filter: blur(6px);
 }
 
-/* --- Vista Logueado (app.html) --- */
+
 #logged-in-view {
     padding: 3rem 2rem;
     max-width: 1200px;
@@ -367,7 +367,7 @@ button:active {
     border: 2px solid var(--primary-color);
 }
 
-/* App Navigation (Horizontal) */
+
 .app-nav {
     display: flex;
     flex-direction: row;
@@ -421,7 +421,7 @@ button:active {
     color: var(--primary-color);
 }
 
-/* Dropdown Styles */
+
 .dropdown {
     position: relative;
 }
@@ -452,14 +452,14 @@ button:active {
     text-decoration: none;
     display: flex;
     justify-content: flex-start;
-    /* Align left in dropdown */
+    
     align-items: center;
     width: 100%;
     transition: background 0.2s, color 0.2s;
     font-weight: 500;
     box-sizing: border-box;
     background-color: transparent !important;
-    /* Reset inherited active bg */
+    
 }
 
 .dropdown-content a:hover {
@@ -477,7 +477,7 @@ button:active {
     opacity: 0.7;
 }
 
-/* Content visibility */
+
 .content {
     display: none;
     animation: fadeIn 0.4s ease-out;
@@ -499,7 +499,7 @@ button:active {
     }
 }
 
-/* --- Drag and Drop Styles --- */
+
 .drop-area {
     border: 2px dashed #ccc;
     border-radius: var(--radius-lg);
@@ -527,7 +527,7 @@ button:active {
     object-fit: contain;
 }
 
-/* --- Sub-navigation Tabs (App) --- */
+
 .sub-nav {
     display: flex;
     gap: 1rem;
@@ -561,7 +561,7 @@ button:active {
     box-shadow: var(--shadow-sm);
 }
 
-/* --- User Request Item in List --- */
+
 .user-request-item {
     display: flex;
     justify-content: space-between;
@@ -623,7 +623,7 @@ button:active {
     background: #dc2626;
 }
 
-/* Status colors */
+
 .status-pendiente {
     color: #f59e0b;
     font-weight: bold;
@@ -639,7 +639,7 @@ button:active {
     font-weight: bold;
 }
 
-/* Modal Styles */
+
 .modal {
     display: none;
     position: fixed;
@@ -762,7 +762,7 @@ button:active {
     background: #e5e7eb;
 }
 
-/* --- Map Search Styles --- */
+
 .map-slider-card {
     background: white;
     padding: 1rem;
@@ -803,7 +803,7 @@ button:active {
     box-shadow: var(--shadow-sm);
 }
 
-/* Specific button for requests */
+
 .btn-solicitar {
     background: var(--primary-color);
     color: white;
@@ -848,12 +848,12 @@ button:active {
     gap: 10px;
 }
 
-/* Modal Styles - Ensuring visibility classes work */
+
 .hidden {
     display: none !important;
 }
 
-/* Refactoring Classes for Owner View and App.jsp */
+
 
 .w-100 {
     width: 100%;
@@ -871,7 +871,7 @@ button:active {
     display: inline;
 }
 
-/* Owner Room Card overrides */
+
 .room-card.owner-card {
     display: flex;
     flex-direction: column;
@@ -899,7 +899,7 @@ button:active {
     width: 100%;
 }
 
-/* Requests List */
+
 .requests-container {
     display: none;
     padding-top: 10px;
@@ -945,14 +945,14 @@ button:active {
     display: inline;
 }
 
-/* Logo Utility */
+
 .logo-img {
     height: 1.2em;
     vertical-align: middle;
     margin-right: 10px;
 }
 
-/* Map specific */
+
 .map-search-container {
     display: none;
 }
@@ -965,7 +965,7 @@ button:active {
     cursor: pointer;
 }
 
-/* Google Maps InfoWindow Styles */
+
 .info-window-content {
     text-align: center;
     width: 180px;
@@ -1018,10 +1018,10 @@ button:active {
     background: var(--primary-hover);
 }
 
-/* --- Room Rating Badge (New) --- */
+
 .room-card {
     position: relative;
-    /* Ensure absolute positioning works for children */
+    
 }
 
 .room-rating {
@@ -1030,7 +1030,7 @@ button:active {
     margin-left: auto;
     width: fit-content;
     font-size: 1.4rem;
-    /* Larger font size */
+    
     font-weight: 800;
     padding: 6px 12px;
     border-radius: 12px;
@@ -1045,30 +1045,30 @@ button:active {
 
 .rating-high {
     color: #10b981;
-    /* Green */
+    
     border: 3px solid #10b981;
 }
 
 .rating-medium {
     color: #f59e0b;
-    /* Yellow/Orange */
+    
     border: 3px solid #f59e0b;
 }
 
 .rating-low {
     color: #ef4444;
-    /* Red */
+    
     border: 3px solid #ef4444;
 }
 
 .rating-none {
     color: #9ca3af;
-    /* Gray */
+    
     border: 3px solid #9ca3af;
     font-size: 1.1rem;
 }
 
-/* --- Rating Stars --- */
+
 .rating-container {
     display: flex;
     justify-content: center;
@@ -1096,7 +1096,7 @@ button:active {
 .star-rating label:hover,
 .star-rating label:hover ~ label,
 .star-rating input:checked ~ label {
-    color: #fbbf24; /* Amber 400 */
+    color: #fbbf24; 
 }
 
 .star-rating input:checked + label:hover,
@@ -1104,5 +1104,5 @@ button:active {
 .star-rating input:checked ~ label:hover,
 .star-rating input:checked ~ label:hover ~ label,
 .star-rating label:hover ~ input:checked ~ label {
-    color: #f59e0b; /* Amber 500 */
+    color: #f59e0b; 
 }

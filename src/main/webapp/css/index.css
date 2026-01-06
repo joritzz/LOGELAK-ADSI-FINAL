@@ -24,7 +24,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: flex-end;
-    /* Align login link to the right if logo is not here */
+
     align-items: center;
 }
 
