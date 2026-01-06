@@ -204,6 +204,23 @@
                                                                     <p><strong>Precio:</strong>
                                                                         <%= h.getPrecioMes() %> €/mes
                                                                     </p>
+                                                                    <p><strong>Propietario:</strong>
+                                                                        <%= h.getEmailPropietario() %>
+                                                                    </p>
+                                                                    <% double
+                                                                        media=utils.BD.getMediaPuntuacion(h.getCodHabi());
+                                                                        String ratingClass="rating-none" ; if (media>
+                                                                        4.0) ratingClass = "rating-high";
+                                                                        else if (media > 2.5) ratingClass =
+                                                                        "rating-medium";
+                                                                        else if (media > 0) ratingClass = "rating-low";
+
+                                                                        String ratingText = (media > 0) ?
+                                                                        String.format("%.2f", media) : "--";
+                                                                        %>
+                                                                        <div class="room-rating <%= ratingClass %>">
+                                                                            <%= ratingText %>
+                                                                        </div>
                                                                 </div>
                                                                 <div class="room-actions">
                                                                     <button class="btn-solicitar"
@@ -224,6 +241,57 @@
                                         <!-- VISTA HABITACIONES -->
                                         <% if ("habitaciones".equals(currentView)) { %>
                                             <div id="content-habitaciones" class="content active">
+
+
+                                                <div id="view-ver-mis-habi" class="subtab-content">
+                                                    <h3>Mis Habitaciones Publicadas</h3>
+                                                    <div class="results-grid">
+                                                        <% List<Habitacion> misHabitaciones = (List<Habitacion>)
+                                                                request.getAttribute("misHabitaciones");
+                                                                if (misHabitaciones != null &&
+                                                                !misHabitaciones.isEmpty()) {
+                                                                for (Habitacion h : misHabitaciones) {
+                                                                String img = (h.getImagenHabitacion() != null) ?
+                                                                h.getImagenHabitacion() :
+                                                                "https://placehold.co/200x150?text=Sin+Foto";
+                                                                %>
+                                                                <div class="room-card">
+                                                                    <img src="<%= img %>" alt="Foto" class="room-img">
+                                                                    <div class="room-info">
+                                                                        <h4>
+                                                                            <%= h.getDireccion() %>
+                                                                        </h4>
+                                                                        <p><strong>ID:</strong>
+                                                                            <%= h.getCodHabi() %>
+                                                                        </p>
+                                                                        <p><strong>Ciudad:</strong>
+                                                                            <%= h.getCiudad() %>
+                                                                        </p>
+                                                                        <p><strong>Precio:</strong>
+                                                                            <%= h.getPrecioMes() %> €/mes
+                                                                        </p>
+                                                                        <% double
+                                                                            media=utils.BD.getMediaPuntuacion(h.getCodHabi());
+                                                                            String ratingClass="rating-none" ; if
+                                                                            (media> 4.0) ratingClass = "rating-high";
+                                                                            else if (media > 2.5) ratingClass =
+                                                                            "rating-medium";
+                                                                            else if (media > 0) ratingClass =
+                                                                            "rating-low";
+
+                                                                            String ratingText = (media > 0) ?
+                                                                            String.format("%.2f", media) : "--";
+                                                                            %>
+                                                                            <div class="room-rating <%= ratingClass %>">
+                                                                                <%= ratingText %>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                                <% } } else { %>
+                                                                    <p>No tienes habitaciones publicadas.</p>
+                                                                    <% } %>
+                                                    </div>
+                                                </div>
                                                 <div class="sub-nav">
                                                     <h3>Añadir Habitación</h3>
                                                 </div>
@@ -265,41 +333,6 @@
                                                         <button type="submit" class="btn-primary">Publicar
                                                             Habitación</button>
                                                     </form>
-                                                </div>
-
-                                                <div id="view-ver-mis-habi" class="subtab-content">
-                                                    <h3>Mis Habitaciones Publicadas</h3>
-                                                    <div class="results-grid">
-                                                        <% List<Habitacion> misHabitaciones = (List<Habitacion>)
-                                                                request.getAttribute("misHabitaciones");
-                                                                if (misHabitaciones != null &&
-                                                                !misHabitaciones.isEmpty()) {
-                                                                for (Habitacion h : misHabitaciones) {
-                                                                String img = (h.getImagenHabitacion() != null) ?
-                                                                h.getImagenHabitacion() :
-                                                                "https://placehold.co/200x150?text=Sin+Foto";
-                                                                %>
-                                                                <div class="room-card">
-                                                                    <img src="<%= img %>" alt="Foto" class="room-img">
-                                                                    <div class="room-info">
-                                                                        <h4>
-                                                                            <%= h.getDireccion() %>
-                                                                        </h4>
-                                                                        <p><strong>ID:</strong>
-                                                                            <%= h.getCodHabi() %>
-                                                                        </p>
-                                                                        <p><strong>Ciudad:</strong>
-                                                                            <%= h.getCiudad() %>
-                                                                        </p>
-                                                                        <p><strong>Precio:</strong>
-                                                                            <%= h.getPrecioMes() %> €/mes
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <% } } else { %>
-                                                                    <p>No tienes habitaciones publicadas.</p>
-                                                                    <% } %>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <% } %>
@@ -671,7 +704,7 @@
                                 </div>
 
                                 <!-- Modal para seleccionar fecha de solicitud -->
-                                <div id="modal-solicitud" class="modal hidden">
+                                <div id="modal-solicitud" class="modal">
                                     <div class="modal-content">
                                         <div class="modal-header-icon">📅</div>
                                         <h3>Solicitar Alquiler</h3>
@@ -862,6 +895,16 @@
 
                                         habitaciones.forEach(h => {
                                             // Add to List
+                                            let ratingVal = "--";
+                                            let ratingClass = "rating-none";
+
+                                            if (h.puntuacionMedia > 0) {
+                                                ratingVal = h.puntuacionMedia.toFixed(2);
+                                                if (h.puntuacionMedia > 4.0) ratingClass = "rating-high";
+                                                else if (h.puntuacionMedia > 2.5) ratingClass = "rating-medium";
+                                                else ratingClass = "rating-low";
+                                            }
+
                                             const cardDiv = document.createElement("div");
                                             cardDiv.className = "room-card";
                                             cardDiv.innerHTML =
@@ -870,7 +913,9 @@
                                                 '<h4>' + h.direccion + '</h4>' +
                                                 '<p><strong>Ciudad:</strong> ' + h.ciudad + '</p>' +
                                                 '<p><strong>Precio:</strong> ' + h.precio + ' €/mes</p>' +
+                                                '<p><strong>Propietario:</strong> ' + h.emailPropietario + '</p>' +
                                                 '<p><strong>Disponible:</strong> ' + h.fechaDisponible + '</p>' +
+                                                '<div class="room-rating ' + ratingClass + '">' + ratingVal + '</div>' +
                                                 '</div>' +
                                                 '<div class="room-actions">' +
                                                 '<button class="btn-solicitar" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')">Solicitar 📩</button>' +
@@ -902,6 +947,7 @@
                                                     '<h5 class="info-window-title">' + h.direccion + '</h5>' +
                                                     '<p class="info-window-text">Disponible desde: ' + h.fechaDisponible + '</p>' +
                                                     '<p class="info-window-subtext">' + h.emailPropietario + '</p>' +
+                                                    '<p class="info-window-subtext">Puntuación: ' + ((h.puntuacionMedia > 0) ? h.puntuacionMedia.toFixed(2) : "--") + '</p>' +
                                                     '<p class="info-window-price">' + h.precio + ' €/mes</p>' +
                                                     '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')" ' +
                                                     'class="info-window-btn">Solicitar</button>' +

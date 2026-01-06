@@ -145,6 +145,8 @@ public class app extends HttpServlet {
                                     out.print("\"direccion\": \"" + direccion + "\",");
                                     out.print("\"ciudad\": \"" + ciudadH + "\",");
                                     out.print("\"emailPropietario\": \"" + email + "\",");
+                                    out.print("\"puntuacionMedia\": " + utils.BD.getMediaPuntuacion(h.getCodHabi())
+                                            + ",");
                                     out.print("\"precio\": " + h.getPrecioMes() + ",");
                                     out.print("\"imagen\": \"" + img + "\",");
                                     out.print("\"fechaDisponible\": \""

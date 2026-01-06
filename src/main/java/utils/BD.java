@@ -436,4 +436,19 @@ public class BD {
         return new java.sql.Date(System.currentTimeMillis());
     }
 
+    public static double getMediaPuntuacion(int codHabi) {
+        String sql = "SELECT AVG(puntos) FROM puntuacion WHERE codHabi = ?";
+        try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
+            pstmt.setInt(1, codHabi);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
 }
