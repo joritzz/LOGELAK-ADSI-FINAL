@@ -161,6 +161,8 @@ public class app extends HttpServlet {
 
                             request.setAttribute("searchResults", habitaciones);
                             request.setAttribute("searchCity", ciudad); // To keep selected option
+                            request.setAttribute("searchDateStart", fechaInicioStr);
+                            request.setAttribute("searchDateEnd", fechaFinStr);
                         }
                         view = "consultar";
                         break;
@@ -229,42 +231,76 @@ public class app extends HttpServlet {
 
                     case "requestRoom":
                         int codHabi = Integer.parseInt(request.getParameter("codHabi"));
+                        String fInicio = request.getParameter("fechaInicio");
+                        String fFin = request.getParameter("fechaFin");
+
                         models.Solicitud s = new models.Solicitud();
                         s.setCodHabi(codHabi);
                         s.setEmailInquilino(usuario.getEmail());
                         s.setEstado("Pendiente");
-                        utils.BD.insertSolicitud(s);
-                        result = "Solicitud enviada.";
-                        view = "solicitudes"; // Redirect user to see their requests
+
+                        if (fInicio != null && !fInicio.isEmpty() && fFin != null && !fFin.isEmpty()) {
+                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                            s.setFechaPosibleInicioAlquiler(sdf.parse(fInicio));
+                            s.setFechaPosibleFinAlquiler(sdf.parse(fFin));
+                        } else {
+                            // Fallback or error handling if dates are missing, though UI enforces them
+                            s.setFechaPosibleInicioAlquiler(new java.util.Date()); // Prevents null pointer in BD
+                            s.setFechaPosibleFinAlquiler(new java.util.Date());
+                        }
+
+                        boolean inserted = utils.BD.insertSolicitud(s);
+                        if (inserted) {
+                            result = "Solicitud enviada.";
+                        } else {
+                            result = "Error: Ya has enviado una solicitud para esta habitación (o ocurrió un error interno).";
+                        }
+                        view = "inquilino_solicitudes"; // Redirect to specific view
                         break;
 
                     case "updateRequest":
                         int codHabiReq = Integer.parseInt(request.getParameter("codHabi"));
                         String emailInquilino = request.getParameter("emailInquilino");
                         String nuevoEstado = request.getParameter("nuevoEstado");
+                        String fechaInicioStrRequest = request.getParameter("fechaInicio");
+                        String fechaFinStrRequest = request.getParameter("fechaFin");
 
-                        utils.BD.updateEstadoSolicitud(codHabiReq, emailInquilino, nuevoEstado);
+                        java.util.Date fechaInicioRequest = null;
+                        java.util.Date fechaFinRequest = null;
+                        try {
+                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                            if (fechaInicioStrRequest != null && !fechaInicioStrRequest.isEmpty()) {
+                                fechaInicioRequest = sdf.parse(fechaInicioStrRequest);
+                            }
+                            if (fechaFinStrRequest != null && !fechaFinStrRequest.isEmpty()) {
+                                fechaFinRequest = sdf.parse(fechaFinStrRequest);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        utils.BD.updateEstadoSolicitud(codHabiReq, emailInquilino, fechaInicioRequest, nuevoEstado);
 
                         if ("Aceptada".equals(nuevoEstado)) {
                             // Crear alquiler
                             models.Alquiler a = new models.Alquiler();
                             a.setCodHabi(codHabiReq);
                             a.setEmailInquilino(emailInquilino);
-                            // Fechas would ostensibly come from the request or system time.
-                            // Using current time + 1 month for demo purposes given no date in updateRequest
-                            a.setFechaInicio(new java.util.Date());
-                            java.util.Calendar cal = java.util.Calendar.getInstance();
-                            cal.add(java.util.Calendar.MONTH, 1);
-                            a.setFechaFin(cal.getTime());
-
+                            if (fechaInicioRequest != null)
+                                a.setFechaInicio(fechaInicioRequest);
+                            if (fechaFinRequest != null)
+                                a.setFechaFin(fechaFinRequest);
                             utils.BD.insertAlquiler(a);
                         }
+
                         result = "Solicitud " + nuevoEstado.toLowerCase() + ".";
                         view = "propietario";
                         break;
                 }
             }
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
             result = "Error: " + e.getMessage();
         }
@@ -288,11 +324,12 @@ public class app extends HttpServlet {
                 java.util.List<models.Solicitud> solicitudesEntrantes = utils.BD
                         .getSolicitudesEntrantes(usuario.getEmail());
                 // Group requests by Habitacion
-                java.util.Map<models.Habitacion, java.util.List<models.Solicitud>> solicitudesPorHabitacion = new java.util.HashMap<>();
+                java.util.Map<Integer, java.util.List<models.Solicitud>> solicitudesPorHabitacion = new java.util.HashMap<>();
                 for (models.Solicitud s : solicitudesEntrantes) {
                     models.Habitacion h = s.getHabitacion();
                     if (h != null) {
-                        solicitudesPorHabitacion.computeIfAbsent(h, k -> new java.util.ArrayList<>()).add(s);
+                        solicitudesPorHabitacion.computeIfAbsent(h.getCodHabi(), k -> new java.util.ArrayList<>())
+                                .add(s);
                     }
                 }
                 request.setAttribute("solicitudesPorHabitacion", solicitudesPorHabitacion);

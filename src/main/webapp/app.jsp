@@ -30,9 +30,9 @@
 
                             <% Usuario usuario=(Usuario) session.getAttribute("usuario"); String nombreUsuario=(usuario
                                 !=null) ? usuario.getNombre() : "" ; String fotoUsuario=(usuario !=null &&
-                                usuario.getFoto() !=null) ? usuario.getFoto()
-                                : "https://placehold.co/50x50/2563eb/FFF?text=U" ; String currentView=(String)
-                                request.getAttribute("currentView"); if (currentView==null) currentView="" ; %>
+                                usuario.getFoto() !=null) ? usuario.getFoto() : "image/default-user.png" ; String
+                                currentView=(String) request.getAttribute("currentView"); if (currentView==null)
+                                currentView="" ; %>
 
                                 <div id="logged-in-view">
                                     <div class="user-header">
@@ -46,17 +46,17 @@
 
 
                                     <nav class="app-nav">
-                                        <div class="nav-tab tab-consultar <%= " consultar".equals(currentView)
+                                        <div class="nav-tab tab-consultar <%= "consultar".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=consultar">Consultar</a>
                                         </div>
-                                        <div class="nav-tab tab-habitaciones <%= " habitaciones".equals(currentView)
+                                        <div class="nav-tab tab-habitaciones <%= "habitaciones".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=habitaciones">Habitaciones</a>
                                         </div>
 
                                         <!-- Inquilino Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith(" inquilino") ? "active"
+                                        <div class="nav-tab dropdown <%= currentView.startsWith("inquilino") ? "active"
                                             : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Inquilino</span>
                                             <div class="dropdown-content">
@@ -66,7 +66,7 @@
                                         </div>
 
                                         <!-- Propietario Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith(" propietario")
+                                        <div class="nav-tab dropdown <%= currentView.startsWith("propietario")
                                             ? "active" : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Propietario</span>
                                             <div class="dropdown-content">
@@ -142,12 +142,17 @@
                                                         <div class="form-group">
                                                             <label for="search-date-start">Fecha Inicio:</label>
                                                             <input type="date" id="search-date-start" name="fechaInicio"
-                                                                min="<%= java.time.LocalDate.now() %>" required>
+                                                                value="<%= (request.getAttribute(" searchDateStart")
+                                                                !=null) ? request.getAttribute("searchDateStart") : ""
+                                                                %>"
+                                                            min="<%= java.time.LocalDate.now() %>" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="search-date-end">Fecha Fin:</label>
                                                             <input type="date" id="search-date-end" name="fechaFin"
-                                                                min="<%= java.time.LocalDate.now() %>" required>
+                                                                value="<%= (request.getAttribute(" searchDateEnd")
+                                                                !=null) ? request.getAttribute("searchDateEnd") : "" %>"
+                                                            min="<%= java.time.LocalDate.now() %>" required>
                                                         </div>
                                                         <button type="submit">Buscar</button>
                                                     </form>
@@ -188,7 +193,7 @@
                                                             for (Habitacion h : searchResults) {
                                                             String img = (h.getImagenHabitacion() != null) ?
                                                             h.getImagenHabitacion() :
-                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                            "image/no-image.png";
                                                             %>
                                                             <div class="room-card" data-lat="<%= h.getLatitudH() %>"
                                                                 data-lng="<%= h.getLongitudH() %>">
@@ -207,8 +212,13 @@
                                                                 </div>
                                                                 <div class="room-actions">
                                                                     <button class="btn-solicitar"
-                                                                        onclick="abrirModalSolicitud('<%= h.getCodHabi() %>', '<%= h.getDireccion() %>', <%= h.getPrecioMes() %>)">Solicitar
-                                                                        📩</button>
+                                                                        onclick="abrirModalSolicitud('<%= h.getCodHabi() %>', '<%= h.getDireccion() %>', <%= h.getPrecioMes() %>, '<%= (request.getAttribute("searchDateStart")!=null)?request.getAttribute("searchDateStart")
+                                                                        : "" %>', '<%=
+                                                                            (request.getAttribute("searchDateEnd")
+                                                                            !=null) ?
+                                                                            request.getAttribute("searchDateEnd") : ""
+                                                                            %>')">Solicitar
+                                                                            📩</button>
                                                                 </div>
                                                             </div>
                                                             <% } } if ((searchResults==null || searchResults.isEmpty())
@@ -224,7 +234,7 @@
                                         <!-- VISTA HABITACIONES -->
                                         <% if ("habitaciones".equals(currentView)) { %>
                                             <div id="content-habitaciones" class="content active">
-                                                
+
 
                                                 <div id="view-ver-mis-habi" class="subtab-content">
                                                     <h3>Mis Habitaciones Publicadas</h3>
@@ -236,7 +246,7 @@
                                                                 for (Habitacion h : misHabitaciones) {
                                                                 String img = (h.getImagenHabitacion() != null) ?
                                                                 h.getImagenHabitacion() :
-                                                                "https://placehold.co/200x150?text=Sin+Foto";
+                                                                "image/no-image.png";
                                                                 %>
                                                                 <div class="room-card">
                                                                     <img src="<%= img %>" alt="Foto" class="room-img">
@@ -260,7 +270,7 @@
                                                                     <% } %>
                                                     </div>
                                                 </div>
-                                                    <div class="sub-nav">
+                                                <div class="sub-nav">
                                                     <h3>Añadir Habitación</h3>
                                                 </div>
                                                 <div id="view-anadir" class="subtab-content">
@@ -319,7 +329,7 @@
                                                                     String img = (h != null &&
                                                                     h.getImagenHabitacion() != null) ?
                                                                     h.getImagenHabitacion() :
-                                                                    "https://placehold.co/200x150?text=Sin+Foto";
+                                                                    "image/no-image.png";
                                                                     %>
                                                                     <div class="room-card">
                                                                         <img src="<%= img %>" alt="Foto"
@@ -331,15 +341,26 @@
                                                                             </h4>
                                                                             <p><strong>Estado:</strong> <span
                                                                                     class="status-<%= s.getEstado().toLowerCase() %>">
-                                                                                    <%= s.getEstado() %>
+                                                                                    <%= s.getEstado().substring(0,
+                                                                                        1).toUpperCase() +
+                                                                                        s.getEstado().substring(1).toLowerCase()
+                                                                                        %>
                                                                                 </span></p>
                                                                             <p><strong>Precio:</strong>
                                                                                 <%= (h !=null) ? h.getPrecioMes() : 0 %>
                                                                                     €/mes
                                                                             </p>
-                                                                            <p><small>Propietario: <%= (h !=null) ?
-                                                                                        h.getEmailPropietario() : "" %>
-                                                                                </small></p>
+                                                                            <p><strong>Propietario:</strong>
+                                                                                <%= (h !=null) ? h.getEmailPropietario()
+                                                                                    : "" %>
+                                                                            </p>
+                                                                            <p><strong>Fechas:</strong>
+                                                                                De: <%=
+                                                                                    s.getFechaPosibleInicioAlquiler() %>
+                                                                                    Hasta: <%=
+                                                                                        s.getFechaPosibleFinAlquiler()
+                                                                                        %>
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                     <% } } else { %>
@@ -365,7 +386,7 @@
                                                                             String img = (h != null &&
                                                                             h.getImagenHabitacion() != null) ?
                                                                             h.getImagenHabitacion() :
-                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                            "image/no-image.png";
                                                                             %>
                                                                             <div class="room-card">
                                                                                 <img src="<%= img %>" alt="Foto"
@@ -407,11 +428,10 @@
                                                                         class="content active">
                                                                         <h3>Solicitudes Recibidas (Por Habitación)</h3>
                                                                         <div class="results-grid">
-                                                                            <% java.util.Map<models.Habitacion,
-                                                                                List<Solicitud>>
+                                                                            <% java.util.Map<Integer, List<Solicitud>>
                                                                                 solicitudesPorHabitacion =
-                                                                                (java.util.Map<models.Habitacion,
-                                                                                    List<Solicitud>>)
+                                                                                (java.util.Map<Integer, List<Solicitud>
+                                                                                    >)
                                                                                     request.getAttribute("solicitudesPorHabitacion");
 
                                                                                     if (solicitudesPorHabitacion != null
@@ -419,18 +439,24 @@
                                                                                     !solicitudesPorHabitacion.isEmpty())
                                                                                     {
                                                                                     for (java.util.Map.Entry
-                                                                                    <models.Habitacion, List<Solicitud>>
+                                                                                    <Integer, List<Solicitud>>
                                                                                         entry :
                                                                                         solicitudesPorHabitacion.entrySet())
                                                                                         {
-                                                                                        Habitacion h = entry.getKey();
+                                                                                        Integer codHabi =
+                                                                                        entry.getKey();
                                                                                         List<Solicitud> reqs =
                                                                                             entry.getValue();
+                                                                                            if (reqs == null ||
+                                                                                            reqs.isEmpty()) continue;
+                                                                                            Habitacion h =
+                                                                                            reqs.get(0).getHabitacion();
+                                                                                            // Get from first request
                                                                                             String img =
                                                                                             (h.getImagenHabitacion() !=
                                                                                             null) ?
                                                                                             h.getImagenHabitacion() :
-                                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                                            "image/no-image.png";
                                                                                             %>
                                                                                             <div
                                                                                                 class="room-card owner-card">
@@ -481,7 +507,7 @@
                                                                                                         inquilino.getFoto()
                                                                                                         !=null) ?
                                                                                                         inquilino.getFoto()
-                                                                                                        : "https://placehold.co/50x50?text=U"
+                                                                                                        : "image/default-user.png"
                                                                                                         ; %>
                                                                                                         <div
                                                                                                             class="user-request-item">
@@ -528,7 +554,7 @@
                                                                                                             <div
                                                                                                                 class="actions">
                                                                                                                 <% if
-                                                                                                                    ("pendiente".equalsIgnoreCase(s.getEstado()))
+                                                                                                                    ("Pendiente".equalsIgnoreCase(s.getEstado()))
                                                                                                                     { %>
                                                                                                                     <form
                                                                                                                         action="app"
@@ -546,6 +572,14 @@
                                                                                                                             type="hidden"
                                                                                                                             name="emailInquilino"
                                                                                                                             value="<%= s.getEmailInquilino() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaInicio"
+                                                                                                                            value="<%= s.getFechaPosibleInicioAlquiler() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaFin"
+                                                                                                                            value="<%= s.getFechaPosibleFinAlquiler() %>">
                                                                                                                         <input
                                                                                                                             type="hidden"
                                                                                                                             name="nuevoEstado"
@@ -571,6 +605,14 @@
                                                                                                                             type="hidden"
                                                                                                                             name="emailInquilino"
                                                                                                                             value="<%= s.getEmailInquilino() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaInicio"
+                                                                                                                            value="<%= s.getFechaPosibleInicioAlquiler() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaFin"
+                                                                                                                            value="<%= s.getFechaPosibleFinAlquiler() %>">
                                                                                                                         <input
                                                                                                                             type="hidden"
                                                                                                                             name="nuevoEstado"
@@ -626,7 +668,7 @@
                                                                                             h.getImagenHabitacion() !=
                                                                                             null) ?
                                                                                             h.getImagenHabitacion() :
-                                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                                            "image/no-image.png";
                                                                                             %>
                                                                                             <div class="room-card">
                                                                                                 <img src="<%= img %>"
@@ -672,7 +714,7 @@
                                 </div>
 
                                 <!-- Modal para seleccionar fecha de solicitud -->
-                                <div id="modal-solicitud" class="modal hidden">
+                                <div id="modal-solicitud" class="modal">
                                     <div class="modal-content">
                                         <div class="modal-header-icon">📅</div>
                                         <h3>Solicitar Alquiler</h3>
@@ -683,6 +725,8 @@
                                         <form action="app" method="post">
                                             <input type="hidden" name="action" value="requestRoom">
                                             <input type="hidden" name="codHabi" id="modal-id-habitacion">
+                                            <input type="hidden" name="fechaInicio" id="modal-fecha-inicio">
+                                            <input type="hidden" name="fechaFin" id="modal-fecha-fin">
                                             <p class="modal-instruction">¿Estás seguro de que
                                                 quieres solicitar esta
                                                 habitación?</p>
@@ -697,8 +741,10 @@
                                 </div>
 
                                 <script>
-                                    function abrirModalSolicitud(id, direccion, precio) {
+                                    function abrirModalSolicitud(id, direccion, precio, fechaInicio, fechaFin) {
                                         document.getElementById('modal-id-habitacion').value = id;
+                                        document.getElementById('modal-fecha-inicio').value = fechaInicio;
+                                        document.getElementById('modal-fecha-fin').value = fechaFin;
                                         document.getElementById('modal-room-address').textContent = direccion;
                                         document.getElementById('modal-room-price').textContent = precio + " €/mes";
                                         document.getElementById('modal-solicitud').style.display = 'flex';

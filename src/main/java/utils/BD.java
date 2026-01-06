@@ -181,15 +181,19 @@ public class BD {
         }
     }
 
-    public static void insertSolicitud(Solicitud s) {
-        String sql = "INSERT INTO solicitud (codHabi, emailInquilino, estado) VALUES (?, ?, ?)";
+    public static boolean insertSolicitud(Solicitud s) {
+        String sql = "INSERT INTO solicitud (codHabi, emailInquilino, estado, fechaPosibleInicioAlquiler, fechaPosibleFinAlquiler) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setInt(1, s.getCodHabi());
             pstmt.setString(2, s.getEmailInquilino());
             pstmt.setString(3, s.getEstado());
+            pstmt.setDate(4, new java.sql.Date(s.getFechaPosibleInicioAlquiler().getTime()));
+            pstmt.setDate(5, new java.sql.Date(s.getFechaPosibleFinAlquiler().getTime()));
             pstmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -204,6 +208,8 @@ public class BD {
                     s.setCodHabi(rs.getInt("codHabi"));
                     s.setEmailInquilino(rs.getString("emailInquilino"));
                     s.setEstado(rs.getString("estado"));
+                    s.setFechaPosibleInicioAlquiler(rs.getDate("fechaPosibleInicioAlquiler"));
+                    s.setFechaPosibleFinAlquiler(rs.getDate("fechaPosibleFinAlquiler"));
 
                     Habitacion h = new Habitacion();
                     h.setDireccion(rs.getString("dirección"));
@@ -260,12 +266,14 @@ public class BD {
         return lista;
     }
 
-    public static void updateEstadoSolicitud(int codHabi, String emailInquilino, String estado) {
-        String sql = "UPDATE solicitud SET estado = ? WHERE codHabi = ? AND emailInquilino = ?";
+    public static void updateEstadoSolicitud(int codHabi, String emailInquilino, java.util.Date fechaInicio,
+            String estado) {
+        String sql = "UPDATE solicitud SET estado = ? WHERE codHabi = ? AND emailInquilino = ? AND fechaPosibleInicioAlquiler = ?";
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, estado);
             pstmt.setInt(2, codHabi);
             pstmt.setString(3, emailInquilino);
+            pstmt.setDate(4, new java.sql.Date(fechaInicio.getTime()));
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -353,7 +361,7 @@ public class BD {
         List<Alquiler> lista = new ArrayList<>();
         String sql = "SELECT a.*, h.dirección, h.precioMes, h.imagenHabitacion FROM alquiler a " +
                 "JOIN habitacion h ON a.codHabi = h.codHabi " +
-                "WHERE h.emailPropietario = ?";
+                "WHERE h.emailPropietario = ? ORDER BY h.codHabi, a.fechaInicioAlqui DESC";
         try (PreparedStatement pstmt = getConexion().prepareStatement(sql)) {
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {

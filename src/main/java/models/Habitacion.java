@@ -84,4 +84,5 @@ public class Habitacion {
     public void setImagenHabitacion(String imagenHabitacion) {
         this.imagenHabitacion = imagenHabitacion;
     }
+
 }

@@ -43,6 +43,12 @@
     --radius-lg: 1rem;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -390,7 +396,6 @@ button:active {
     justify-content: center;
 }
 
-.nav-tab.active,
 .nav-tab.active .dropdown-trigger,
 .nav-tab.active a {
     background-color: var(--primary-color);
@@ -442,7 +447,7 @@ button:active {
 }
 
 .dropdown-content a {
-    color: var(--text-secondary);
+    color: var(--text-secondary) !important;
     padding: 0.75rem 1.5rem;
     text-decoration: none;
     display: flex;
@@ -638,7 +643,7 @@ button:active {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 3000;
     left: 0;
     top: 0;
     width: 100%;
