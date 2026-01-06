@@ -71,4 +71,14 @@ public class Alquiler {
     public void setHabitacion(Habitacion habitacion) {
         this.habitacion = habitacion;
     }
+
+    private boolean valorado;
+
+    public boolean isValorado() {
+        return valorado;
+    }
+
+    public void setValorado(boolean valorado) {
+        this.valorado = valorado;
+    }
 }

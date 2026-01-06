@@ -30,9 +30,9 @@
 
                             <% Usuario usuario=(Usuario) session.getAttribute("usuario"); String nombreUsuario=(usuario
                                 !=null) ? usuario.getNombre() : "" ; String fotoUsuario=(usuario !=null &&
-                                usuario.getFoto() !=null) ? usuario.getFoto()
-                                : "https://placehold.co/50x50/2563eb/FFF?text=U" ; String currentView=(String)
-                                request.getAttribute("currentView"); if (currentView==null) currentView="" ; %>
+                                usuario.getFoto() !=null) ? usuario.getFoto() : "image/default-user.png" ; String
+                                currentView=(String) request.getAttribute("currentView"); if (currentView==null)
+                                currentView="" ; %>
 
                                 <div id="logged-in-view">
                                     <div class="user-header">
@@ -142,12 +142,17 @@
                                                         <div class="form-group">
                                                             <label for="search-date-start">Fecha Inicio:</label>
                                                             <input type="date" id="search-date-start" name="fechaInicio"
-                                                                min="<%= java.time.LocalDate.now() %>" required>
+                                                                value="<%= (request.getAttribute(" searchDateStart")
+                                                                !=null) ? request.getAttribute("searchDateStart") : ""
+                                                                %>"
+                                                            min="<%= java.time.LocalDate.now() %>" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="search-date-end">Fecha Fin:</label>
                                                             <input type="date" id="search-date-end" name="fechaFin"
-                                                                min="<%= java.time.LocalDate.now() %>" required>
+                                                                value="<%= (request.getAttribute(" searchDateEnd")
+                                                                !=null) ? request.getAttribute("searchDateEnd") : "" %>"
+                                                            min="<%= java.time.LocalDate.now() %>" required>
                                                         </div>
                                                         <button type="submit">Buscar</button>
                                                     </form>
@@ -188,7 +193,7 @@
                                                             for (Habitacion h : searchResults) {
                                                             String img = (h.getImagenHabitacion() != null) ?
                                                             h.getImagenHabitacion() :
-                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                            "image/no-image.png";
                                                             %>
                                                             <div class="room-card" data-lat="<%= h.getLatitudH() %>"
                                                                 data-lng="<%= h.getLongitudH() %>">
@@ -204,11 +209,33 @@
                                                                     <p><strong>Precio:</strong>
                                                                         <%= h.getPrecioMes() %> €/mes
                                                                     </p>
+                                                                    <p><strong>Propietario:</strong>
+                                                                        <%= h.getEmailPropietario() %>
+                                                                    </p>
+                                                                    <% double
+                                                                        media=utils.BD.getMediaPuntuacion(h.getCodHabi());
+                                                                        String ratingClass="rating-none" ; if (media>
+                                                                        4.0) ratingClass = "rating-high";
+                                                                        else if (media > 2.5) ratingClass =
+                                                                        "rating-medium";
+                                                                        else if (media > 0) ratingClass = "rating-low";
+
+                                                                        String ratingText = (media > 0) ?
+                                                                        String.format("%.2f", media) : "--";
+                                                                        %>
+                                                                        <div class="room-rating <%= ratingClass %>">
+                                                                            <%= ratingText %>
+                                                                        </div>
                                                                 </div>
                                                                 <div class="room-actions">
                                                                     <button class="btn-solicitar"
-                                                                        onclick="abrirModalSolicitud('<%= h.getCodHabi() %>', '<%= h.getDireccion() %>', <%= h.getPrecioMes() %>)">Solicitar
-                                                                        📩</button>
+                                                                        onclick="abrirModalSolicitud('<%= h.getCodHabi() %>', '<%= h.getDireccion() %>', <%= h.getPrecioMes() %>, '<%= (request.getAttribute("searchDateStart")!=null)?request.getAttribute("searchDateStart")
+                                                                        : "" %>', '<%=
+                                                                            (request.getAttribute("searchDateEnd")
+                                                                            !=null) ?
+                                                                            request.getAttribute("searchDateEnd") : ""
+                                                                            %>')">Solicitar
+                                                                            📩</button>
                                                                 </div>
                                                             </div>
                                                             <% } } if ((searchResults==null || searchResults.isEmpty())
@@ -224,6 +251,57 @@
                                         <!-- VISTA HABITACIONES -->
                                         <% if ("habitaciones".equals(currentView)) { %>
                                             <div id="content-habitaciones" class="content active">
+
+
+                                                <div id="view-ver-mis-habi" class="subtab-content">
+                                                    <h3>Mis Habitaciones Publicadas</h3>
+                                                    <div class="results-grid">
+                                                        <% List<Habitacion> misHabitaciones = (List<Habitacion>)
+                                                                request.getAttribute("misHabitaciones");
+                                                                if (misHabitaciones != null &&
+                                                                !misHabitaciones.isEmpty()) {
+                                                                for (Habitacion h : misHabitaciones) {
+                                                                String img = (h.getImagenHabitacion() != null) ?
+                                                                h.getImagenHabitacion() :
+                                                                "image/no-image.png";
+                                                                %>
+                                                                <div class="room-card">
+                                                                    <img src="<%= img %>" alt="Foto" class="room-img">
+                                                                    <div class="room-info">
+                                                                        <h4>
+                                                                            <%= h.getDireccion() %>
+                                                                        </h4>
+                                                                        <p><strong>ID:</strong>
+                                                                            <%= h.getCodHabi() %>
+                                                                        </p>
+                                                                        <p><strong>Ciudad:</strong>
+                                                                            <%= h.getCiudad() %>
+                                                                        </p>
+                                                                        <p><strong>Precio:</strong>
+                                                                            <%= h.getPrecioMes() %> €/mes
+                                                                        </p>
+                                                                        <% double
+                                                                            media=utils.BD.getMediaPuntuacion(h.getCodHabi());
+                                                                            String ratingClass="rating-none" ; if
+                                                                            (media> 4.0) ratingClass = "rating-high";
+                                                                            else if (media > 2.5) ratingClass =
+                                                                            "rating-medium";
+                                                                            else if (media > 0) ratingClass =
+                                                                            "rating-low";
+
+                                                                            String ratingText = (media > 0) ?
+                                                                            String.format("%.2f", media) : "--";
+                                                                            %>
+                                                                            <div class="room-rating <%= ratingClass %>">
+                                                                                <%= ratingText %>
+                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                                <% } } else { %>
+                                                                    <p>No tienes habitaciones publicadas.</p>
+                                                                    <% } %>
+                                                    </div>
+                                                </div>
                                                 <div class="sub-nav">
                                                     <h3>Añadir Habitación</h3>
                                                 </div>
@@ -266,41 +344,6 @@
                                                             Habitación</button>
                                                     </form>
                                                 </div>
-
-                                                <div id="view-ver-mis-habi" class="subtab-content">
-                                                    <h3>Mis Habitaciones Publicadas</h3>
-                                                    <div class="results-grid">
-                                                        <% List<Habitacion> misHabitaciones = (List<Habitacion>)
-                                                                request.getAttribute("misHabitaciones");
-                                                                if (misHabitaciones != null &&
-                                                                !misHabitaciones.isEmpty()) {
-                                                                for (Habitacion h : misHabitaciones) {
-                                                                String img = (h.getImagenHabitacion() != null) ?
-                                                                h.getImagenHabitacion() :
-                                                                "https://placehold.co/200x150?text=Sin+Foto";
-                                                                %>
-                                                                <div class="room-card">
-                                                                    <img src="<%= img %>" alt="Foto" class="room-img">
-                                                                    <div class="room-info">
-                                                                        <h4>
-                                                                            <%= h.getDireccion() %>
-                                                                        </h4>
-                                                                        <p><strong>ID:</strong>
-                                                                            <%= h.getCodHabi() %>
-                                                                        </p>
-                                                                        <p><strong>Ciudad:</strong>
-                                                                            <%= h.getCiudad() %>
-                                                                        </p>
-                                                                        <p><strong>Precio:</strong>
-                                                                            <%= h.getPrecioMes() %> €/mes
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <% } } else { %>
-                                                                    <p>No tienes habitaciones publicadas.</p>
-                                                                    <% } %>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <% } %>
 
@@ -318,7 +361,7 @@
                                                                     String img = (h != null &&
                                                                     h.getImagenHabitacion() != null) ?
                                                                     h.getImagenHabitacion() :
-                                                                    "https://placehold.co/200x150?text=Sin+Foto";
+                                                                    "image/no-image.png";
                                                                     %>
                                                                     <div class="room-card">
                                                                         <img src="<%= img %>" alt="Foto"
@@ -330,15 +373,26 @@
                                                                             </h4>
                                                                             <p><strong>Estado:</strong> <span
                                                                                     class="status-<%= s.getEstado().toLowerCase() %>">
-                                                                                    <%= s.getEstado() %>
+                                                                                    <%= s.getEstado().substring(0,
+                                                                                        1).toUpperCase() +
+                                                                                        s.getEstado().substring(1).toLowerCase()
+                                                                                        %>
                                                                                 </span></p>
                                                                             <p><strong>Precio:</strong>
                                                                                 <%= (h !=null) ? h.getPrecioMes() : 0 %>
                                                                                     €/mes
                                                                             </p>
-                                                                            <p><small>Propietario: <%= (h !=null) ?
-                                                                                        h.getEmailPropietario() : "" %>
-                                                                                </small></p>
+                                                                            <p><strong>Propietario:</strong>
+                                                                                <%= (h !=null) ? h.getEmailPropietario()
+                                                                                    : "" %>
+                                                                            </p>
+                                                                            <p><strong>Fechas:</strong>
+                                                                                De: <%=
+                                                                                    s.getFechaPosibleInicioAlquiler() %>
+                                                                                    Hasta: <%=
+                                                                                        s.getFechaPosibleFinAlquiler()
+                                                                                        %>
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                     <% } } else { %>
@@ -364,7 +418,7 @@
                                                                             String img = (h != null &&
                                                                             h.getImagenHabitacion() != null) ?
                                                                             h.getImagenHabitacion() :
-                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                            "image/no-image.png";
                                                                             %>
                                                                             <div class="room-card">
                                                                                 <img src="<%= img %>" alt="Foto"
@@ -389,6 +443,19 @@
                                                                                     <p><strong>Fin:</strong>
                                                                                         <%= a.getFechaFin() %>
                                                                                     </p>
+                                                                                    <% java.util.Date now=new
+                                                                                        java.util.Date(); if
+                                                                                        (a.getFechaFin() !=null &&
+                                                                                        a.getFechaFin().before(now) &&
+                                                                                        !a.isValorado()) { %>
+                                                                                        <button class="btn-primary"
+                                                                                            onclick="abrirModalValoracion(<%= a.getCodHabi() %>, '<%= (h !=null) ? h.getDireccion().replace("'", "\\'") : "" %>')">Valorar
+                                                                                            Estancia</button>
+                                                                                        <% } else if (a.isValorado()) {
+                                                                                            %>
+                                                                                            <p class="status-aceptada">
+                                                                                                Valorado ✓</p>
+                                                                                            <% } %>
                                                                                 </div>
                                                                             </div>
                                                                             <% } } else { %>
@@ -406,11 +473,10 @@
                                                                         class="content active">
                                                                         <h3>Solicitudes Recibidas (Por Habitación)</h3>
                                                                         <div class="results-grid">
-                                                                            <% java.util.Map<models.Habitacion,
-                                                                                List<Solicitud>>
+                                                                            <% java.util.Map<Integer, List<Solicitud>>
                                                                                 solicitudesPorHabitacion =
-                                                                                (java.util.Map<models.Habitacion,
-                                                                                    List<Solicitud>>)
+                                                                                (java.util.Map<Integer, List<Solicitud>
+                                                                                    >)
                                                                                     request.getAttribute("solicitudesPorHabitacion");
 
                                                                                     if (solicitudesPorHabitacion != null
@@ -418,18 +484,24 @@
                                                                                     !solicitudesPorHabitacion.isEmpty())
                                                                                     {
                                                                                     for (java.util.Map.Entry
-                                                                                    <models.Habitacion, List<Solicitud>>
+                                                                                    <Integer, List<Solicitud>>
                                                                                         entry :
                                                                                         solicitudesPorHabitacion.entrySet())
                                                                                         {
-                                                                                        Habitacion h = entry.getKey();
+                                                                                        Integer codHabi =
+                                                                                        entry.getKey();
                                                                                         List<Solicitud> reqs =
                                                                                             entry.getValue();
+                                                                                            if (reqs == null ||
+                                                                                            reqs.isEmpty()) continue;
+                                                                                            Habitacion h =
+                                                                                            reqs.get(0).getHabitacion();
+                                                                                            // Get from first request
                                                                                             String img =
                                                                                             (h.getImagenHabitacion() !=
                                                                                             null) ?
                                                                                             h.getImagenHabitacion() :
-                                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                                            "image/no-image.png";
                                                                                             %>
                                                                                             <div
                                                                                                 class="room-card owner-card">
@@ -480,7 +552,7 @@
                                                                                                         inquilino.getFoto()
                                                                                                         !=null) ?
                                                                                                         inquilino.getFoto()
-                                                                                                        : "https://placehold.co/50x50?text=U"
+                                                                                                        : "image/default-user.png"
                                                                                                         ; %>
                                                                                                         <div
                                                                                                             class="user-request-item">
@@ -527,7 +599,7 @@
                                                                                                             <div
                                                                                                                 class="actions">
                                                                                                                 <% if
-                                                                                                                    ("pendiente".equalsIgnoreCase(s.getEstado()))
+                                                                                                                    ("Pendiente".equalsIgnoreCase(s.getEstado()))
                                                                                                                     { %>
                                                                                                                     <form
                                                                                                                         action="app"
@@ -545,6 +617,14 @@
                                                                                                                             type="hidden"
                                                                                                                             name="emailInquilino"
                                                                                                                             value="<%= s.getEmailInquilino() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaInicio"
+                                                                                                                            value="<%= s.getFechaPosibleInicioAlquiler() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaFin"
+                                                                                                                            value="<%= s.getFechaPosibleFinAlquiler() %>">
                                                                                                                         <input
                                                                                                                             type="hidden"
                                                                                                                             name="nuevoEstado"
@@ -570,6 +650,14 @@
                                                                                                                             type="hidden"
                                                                                                                             name="emailInquilino"
                                                                                                                             value="<%= s.getEmailInquilino() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaInicio"
+                                                                                                                            value="<%= s.getFechaPosibleInicioAlquiler() %>">
+                                                                                                                        <input
+                                                                                                                            type="hidden"
+                                                                                                                            name="fechaFin"
+                                                                                                                            value="<%= s.getFechaPosibleFinAlquiler() %>">
                                                                                                                         <input
                                                                                                                             type="hidden"
                                                                                                                             name="nuevoEstado"
@@ -625,7 +713,7 @@
                                                                                             h.getImagenHabitacion() !=
                                                                                             null) ?
                                                                                             h.getImagenHabitacion() :
-                                                                                            "https://placehold.co/200x150?text=Sin+Foto";
+                                                                                            "image/no-image.png";
                                                                                             %>
                                                                                             <div class="room-card">
                                                                                                 <img src="<%= img %>"
@@ -656,6 +744,7 @@
                                                                                                         <%= a.getFechaFin()
                                                                                                             %>
                                                                                                     </p>
+
                                                                                                 </div>
                                                                                             </div>
                                                                                             <% } } else { %>
@@ -670,8 +759,48 @@
                                 </div>
                                 </div>
 
+                                <!-- Modal para valorar estancia -->
+                                <div id="modal-valoracion" class="modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header-icon">⭐</div>
+                                        <h3>Valorar Estancia</h3>
+                                        <div id="modal-rate-info" class="modal-room-info">
+                                            <h4 id="modal-rate-address"></h4>
+                                        </div>
+                                        <form action="app" method="post">
+                                            <input type="hidden" name="action" value="rateRoom">
+                                            <input type="hidden" name="codHabi" id="modal-rate-id-habitacion">
+
+                                            <p class="modal-instruction">¿Cómo valorarías tu estancia?</p>
+
+                                            <div class="rating-container">
+                                                <div class="star-rating">
+                                                    <input type="radio" id="star5" name="puntos" value="5" /><label
+                                                        for="star5" title="5 estrellas">★</label>
+                                                    <input type="radio" id="star4" name="puntos" value="4" /><label
+                                                        for="star4" title="4 estrellas">★</label>
+                                                    <input type="radio" id="star3" name="puntos" value="3" /><label
+                                                        for="star3" title="3 estrellas">★</label>
+                                                    <input type="radio" id="star2" name="puntos" value="2" /><label
+                                                        for="star2" title="2 estrellas">★</label>
+                                                    <input type="radio" id="star1" name="puntos" value="1" /><label
+                                                        for="star1" title="1 estrella">★</label>
+                                                    <input type="radio" id="star0" name="puntos" value="0" checked
+                                                        style="display:none;" />
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-actions">
+                                                <button type="button" class="btn-secondary"
+                                                    onclick="cerrarModalValoracion()">Cancelar</button>
+                                                <button type="submit" class="btn-primary">Enviar Valoración</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
                                 <!-- Modal para seleccionar fecha de solicitud -->
-                                <div id="modal-solicitud" class="modal hidden">
+                                <div id="modal-solicitud" class="modal">
                                     <div class="modal-content">
                                         <div class="modal-header-icon">📅</div>
                                         <h3>Solicitar Alquiler</h3>
@@ -682,6 +811,8 @@
                                         <form action="app" method="post">
                                             <input type="hidden" name="action" value="requestRoom">
                                             <input type="hidden" name="codHabi" id="modal-id-habitacion">
+                                            <input type="hidden" name="fechaInicio" id="modal-fecha-inicio">
+                                            <input type="hidden" name="fechaFin" id="modal-fecha-fin">
                                             <p class="modal-instruction">¿Estás seguro de que
                                                 quieres solicitar esta
                                                 habitación?</p>
@@ -696,8 +827,20 @@
                                 </div>
 
                                 <script>
-                                    function abrirModalSolicitud(id, direccion, precio) {
+                                    function abrirModalValoracion(id, direccion) {
+                                        document.getElementById('modal-rate-id-habitacion').value = id;
+                                        document.getElementById('modal-rate-address').textContent = direccion;
+                                        document.getElementById('modal-valoracion').style.display = 'flex';
+                                    }
+
+                                    function cerrarModalValoracion() {
+                                        document.getElementById('modal-valoracion').style.display = 'none';
+                                    }
+
+                                    function abrirModalSolicitud(id, direccion, precio, fechaInicio, fechaFin) {
                                         document.getElementById('modal-id-habitacion').value = id;
+                                        document.getElementById('modal-fecha-inicio').value = fechaInicio;
+                                        document.getElementById('modal-fecha-fin').value = fechaFin;
                                         document.getElementById('modal-room-address').textContent = direccion;
                                         document.getElementById('modal-room-price').textContent = precio + " €/mes";
                                         document.getElementById('modal-solicitud').style.display = 'flex';
@@ -862,6 +1005,28 @@
 
                                         habitaciones.forEach(h => {
                                             // Add to List
+                                            let ratingVal = "--";
+                                            let ratingClass = "rating-none";
+
+                                            if (h.puntuacionMedia > 0) {
+                                                ratingVal = h.puntuacionMedia.toFixed(2);
+                                                if (h.puntuacionMedia > 4.0) ratingClass = "rating-high";
+                                                else if (h.puntuacionMedia > 2.5) ratingClass = "rating-medium";
+                                                else ratingClass = "rating-low";
+                                            }
+
+                                            // Calculate Dates for Map Request
+                                            let fechaInicioVal = "";
+                                            let fechaFinVal = "";
+                                            if (h.fechaDisponible) {
+                                                fechaInicioVal = h.fechaDisponible;
+                                                let d = new Date(h.fechaDisponible);
+                                                if (!isNaN(d.getTime())) {
+                                                    d.setMonth(d.getMonth() + 1);
+                                                    fechaFinVal = d.toISOString().split('T')[0];
+                                                }
+                                            }
+
                                             const cardDiv = document.createElement("div");
                                             cardDiv.className = "room-card";
                                             cardDiv.innerHTML =
@@ -870,10 +1035,12 @@
                                                 '<h4>' + h.direccion + '</h4>' +
                                                 '<p><strong>Ciudad:</strong> ' + h.ciudad + '</p>' +
                                                 '<p><strong>Precio:</strong> ' + h.precio + ' €/mes</p>' +
+                                                '<p><strong>Propietario:</strong> ' + h.emailPropietario + '</p>' +
                                                 '<p><strong>Disponible:</strong> ' + h.fechaDisponible + '</p>' +
+                                                '<div class="room-rating ' + ratingClass + '">' + ratingVal + '</div>' +
                                                 '</div>' +
                                                 '<div class="room-actions">' +
-                                                '<button class="btn-solicitar" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')">Solicitar 📩</button>' +
+                                                '<button class="btn-solicitar" onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ', \'' + fechaInicioVal + '\', \'' + fechaFinVal + '\')">Solicitar 📩</button>' +
                                                 '</div>';
                                             resultsContainer.appendChild(cardDiv);
 
@@ -902,8 +1069,9 @@
                                                     '<h5 class="info-window-title">' + h.direccion + '</h5>' +
                                                     '<p class="info-window-text">Disponible desde: ' + h.fechaDisponible + '</p>' +
                                                     '<p class="info-window-subtext">' + h.emailPropietario + '</p>' +
+                                                    '<p class="info-window-subtext">Puntuación: ' + ((h.puntuacionMedia > 0) ? h.puntuacionMedia.toFixed(2) : "--") + '</p>' +
                                                     '<p class="info-window-price">' + h.precio + ' €/mes</p>' +
-                                                    '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ')" ' +
+                                                    '<button onclick="abrirModalSolicitud(\'' + h.codHabi + '\', \'' + h.direccion.replace(/'/g, "\\'") + '\', ' + h.precio + ', \'' + fechaInicioVal + '\', \'' + fechaFinVal + '\')" ' +
                                                     'class="info-window-btn">Solicitar</button>' +
                                                     '</div>';
 
