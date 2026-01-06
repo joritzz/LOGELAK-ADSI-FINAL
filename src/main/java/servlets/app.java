@@ -323,6 +323,35 @@ public class app extends HttpServlet {
             case "propietario_solicitudes":
                 java.util.List<models.Solicitud> solicitudesEntrantes = utils.BD
                         .getSolicitudesEntrantes(usuario.getEmail());
+
+                // AUTO-REJECT LOGIC: Check for overlaps with existing rentals
+                java.util.List<models.Alquiler> misAlquileresProp = utils.BD
+                        .getAlquileresComoPropietario(usuario.getEmail());
+
+                if (solicitudesEntrantes != null && misAlquileresProp != null) {
+                    for (models.Solicitud s : solicitudesEntrantes) {
+                        if ("Pendiente".equalsIgnoreCase(s.getEstado())) {
+                            for (models.Alquiler a : misAlquileresProp) {
+                                if (s.getCodHabi() == a.getCodHabi()) {
+                                    // Check overlap: StartA < EndB && EndA > StartB
+                                    // Using getTime() for safe comparison
+                                    long sStart = s.getFechaPosibleInicioAlquiler().getTime();
+                                    long sEnd = s.getFechaPosibleFinAlquiler().getTime();
+                                    long aStart = a.getFechaInicio().getTime();
+                                    long aEnd = a.getFechaFin().getTime();
+
+                                    if (sStart < aEnd && sEnd > aStart) {
+                                        // Overlap found
+                                        utils.BD.updateEstadoSolicitud(s.getCodHabi(), s.getEmailInquilino(),
+                                                s.getFechaPosibleInicioAlquiler(), "Rechazada");
+                                        s.setEstado("Rechazada");
+                                        break; // Stop checking other rentals for this request
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 // Group requests by Habitacion
                 java.util.Map<Integer, java.util.List<models.Solicitud>> solicitudesPorHabitacion = new java.util.HashMap<>();
                 for (models.Solicitud s : solicitudesEntrantes) {
