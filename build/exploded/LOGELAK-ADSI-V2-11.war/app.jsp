@@ -46,17 +46,17 @@
 
 
                                     <nav class="app-nav">
-                                        <div class="nav-tab tab-consultar <%= " consultar".equals(currentView)
+                                        <div class="nav-tab tab-consultar <%= "consultar".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=consultar">Consultar</a>
                                         </div>
-                                        <div class="nav-tab tab-habitaciones <%= " habitaciones".equals(currentView)
+                                        <div class="nav-tab tab-habitaciones <%= "habitaciones".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=habitaciones">Habitaciones</a>
                                         </div>
 
                                         <!-- Inquilino Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith(" inquilino") ? "active"
+                                        <div class="nav-tab dropdown <%= currentView.startsWith("inquilino") ? "active"
                                             : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Inquilino</span>
                                             <div class="dropdown-content">
@@ -66,7 +66,7 @@
                                         </div>
 
                                         <!-- Propietario Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith(" propietario")
+                                        <div class="nav-tab dropdown <%= currentView.startsWith("propietario")
                                             ? "active" : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Propietario</span>
                                             <div class="dropdown-content">
@@ -280,6 +280,7 @@
                                                                         <p><strong>Precio:</strong>
                                                                             <%= h.getPrecioMes() %> €/mes
                                                                         </p>
+<<<<<<< HEAD
                                                                         <% double
                                                                             media=utils.BD.getMediaPuntuacion(h.getCodHabi());
                                                                             String ratingClass="rating-none" ; if
@@ -295,6 +296,8 @@
                                                                             <div class="room-rating <%= ratingClass %>">
                                                                                 <%= ratingText %>
                                                                             </div>
+=======
+>>>>>>> origin/master
                                                                     </div>
                                                                 </div>
                                                                 <% } } else { %>
@@ -827,6 +830,7 @@
                                 </div>
 
                                 <script>
+<<<<<<< HEAD
                                     function abrirModalValoracion(id, direccion) {
                                         document.getElementById('modal-rate-id-habitacion').value = id;
                                         document.getElementById('modal-rate-address').textContent = direccion;
@@ -837,6 +841,8 @@
                                         document.getElementById('modal-valoracion').style.display = 'none';
                                     }
 
+=======
+>>>>>>> origin/master
                                     function abrirModalSolicitud(id, direccion, precio, fechaInicio, fechaFin) {
                                         document.getElementById('modal-id-habitacion').value = id;
                                         document.getElementById('modal-fecha-inicio').value = fechaInicio;
