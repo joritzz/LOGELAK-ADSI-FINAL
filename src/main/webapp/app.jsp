@@ -46,17 +46,17 @@
 
 
                                     <nav class="app-nav">
-                                        <div class="nav-tab tab-consultar <%= "consultar".equals(currentView)
+                                        <div class="nav-tab tab-consultar <%= " consultar".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=consultar">Consultar</a>
                                         </div>
-                                        <div class="nav-tab tab-habitaciones <%= "habitaciones".equals(currentView)
+                                        <div class="nav-tab tab-habitaciones <%= " habitaciones".equals(currentView)
                                             ? "active" : "" %>">
                                             <a href="app?view=habitaciones">Habitaciones</a>
                                         </div>
 
                                         <!-- Inquilino Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith("inquilino") ? "active"
+                                        <div class="nav-tab dropdown <%= currentView.startsWith(" inquilino") ? "active"
                                             : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Inquilino</span>
                                             <div class="dropdown-content">
@@ -66,7 +66,7 @@
                                         </div>
 
                                         <!-- Propietario Dropdown -->
-                                        <div class="nav-tab dropdown <%= currentView.startsWith("propietario")
+                                        <div class="nav-tab dropdown <%= currentView.startsWith(" propietario")
                                             ? "active" : "" %>" onclick="toggleDropdown(event)">
                                             <span class="dropdown-trigger">Propietario</span>
                                             <div class="dropdown-content">
@@ -991,6 +991,47 @@
                                     function cerrarModalSolicitud() {
                                         document.getElementById('modal-solicitud').style.display = 'none';
                                     }
+
+                                    // Date Validation
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        const startDateInput = document.getElementById("search-date-start");
+                                        const endDateInput = document.getElementById("search-date-end");
+
+                                        function getNextDay(dateStr) {
+                                            if (!dateStr) return "";
+                                            const date = new Date(dateStr);
+                                            date.setDate(date.getDate() + 1);
+                                            return date.toISOString().split('T')[0];
+                                        }
+
+                                        if (startDateInput && endDateInput) {
+                                            // Initial check
+                                            if (startDateInput.value) {
+                                                endDateInput.min = getNextDay(startDateInput.value);
+                                            }
+
+                                            startDateInput.addEventListener("change", function () {
+                                                const nextDay = getNextDay(this.value);
+                                                endDateInput.min = nextDay;
+                                                // If end date is invalid (<= start date), clear it or set to next day
+                                                if (endDateInput.value && endDateInput.value <= this.value) {
+                                                    endDateInput.value = nextDay;
+                                                }
+                                            });
+
+                                            const form = startDateInput.closest("form");
+                                            if (form) {
+                                                form.addEventListener("submit", function (e) {
+                                                    if (startDateInput.value && endDateInput.value) {
+                                                        if (endDateInput.value <= startDateInput.value) {
+                                                            e.preventDefault();
+                                                            alert("La fecha de fin debe ser al menos un día posterior a la fecha de inicio.");
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
 
                                     // Check if we should switch to map tab on load
                                     window.onload = function () {

@@ -105,6 +105,45 @@
                         </section>
                     </main>
 
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const startDateInput = document.getElementById("search-date-start");
+                            const endDateInput = document.getElementById("search-date-end");
+
+                            function getNextDay(dateStr) {
+                                if (!dateStr) return "";
+                                const date = new Date(dateStr);
+                                date.setDate(date.getDate() + 1);
+                                return date.toISOString().split('T')[0];
+                            }
+
+                            if (startDateInput && endDateInput) {
+                                // Initial check
+                                if (startDateInput.value) {
+                                    endDateInput.min = getNextDay(startDateInput.value);
+                                }
+
+                                startDateInput.addEventListener("change", function () {
+                                    const nextDay = getNextDay(this.value);
+                                    endDateInput.min = nextDay;
+                                    if (endDateInput.value && endDateInput.value <= this.value) {
+                                        endDateInput.value = nextDay;
+                                    }
+                                });
+                                const form = startDateInput.closest("form");
+                                if (form) {
+                                    form.addEventListener("submit", function (e) {
+                                        if (startDateInput.value && endDateInput.value) {
+                                            if (endDateInput.value <= startDateInput.value) {
+                                                e.preventDefault();
+                                                alert("La fecha de fin debe ser al menos un día posterior a la fecha de inicio.");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    </script>
                 </body>
 
                 </html>
